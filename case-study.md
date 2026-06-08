@@ -104,7 +104,7 @@ Branches in a project are not "one per client", they target **different database
 - **Same reminder service, deployed three times.** The WhatsApp reminder automation is deployed three times, each with a different **"hours since submission"** threshold, so candidates receive a staggered sequence of nudges, all from identical code.
 - **Same code, different database.** Each branch points at a different Notion database in the same workspace via env vars. A new database means a new deployment, not a new codebase.
 
-The payoff is that every client's needs are met by **configuration, not custom code**, which keeps all deployments consistent and safe to change.
+The payoff is speed and reuse: when a client wants the same automation pointed at a **different database**, tuned to a **different setting**, or run on a **different reminder timeframe**, it redeploys to a new space in about **five minutes**. New environment variables and a redeploy, never new code.
 
 ---
 

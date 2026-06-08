@@ -272,9 +272,12 @@ code.</li>
 at a different Notion database in the same workspace via env vars. A new
 database means a new deployment, not a new codebase.</li>
 </ul>
-<p>The payoff is that every client's needs are met by
-<strong>configuration, not custom code</strong>, which keeps all
-deployments consistent and safe to change.</p>
+<p>The payoff is speed and reuse: when a client wants the same
+automation pointed at a <strong>different database</strong>, tuned to a
+<strong>different setting</strong>, or run on a <strong>different
+reminder timeframe</strong>, it redeploys to a new space in about
+<strong>five minutes</strong>. New environment variables and a redeploy,
+never new code.</p>
 <hr />
 <h2 id="documentation-as-a-reliability-layer">Documentation as a
 reliability layer</h2>

@@ -168,7 +168,7 @@ cfg.forEach((c,i)=>{
   s.addText(c[0],{x:x+0.3,y:3.0,w:3.1,h:0.7,fontFace:H,fontSize:16,bold:true,color:TEAL});
   s.addText(c[1],{x:x+0.3,y:3.75,w:3.1,h:1.5,fontFace:BODY,fontSize:13,color:MUTED});
 });
-s.addText("Every client need met by configuration, not custom code, so all deployments stay consistent and safe to change.",
+s.addText("Same automation, different database, setting, or timeframe? Redeployed to a new space in about 5 minutes.",
   { x:M, y:5.75, w:11.9, h:0.4, fontFace:BODY, fontSize:13, italic:true, color:SOFT, align:"center" });
 
 /* ---------- 7 · DOCUMENTATION ---------- */
