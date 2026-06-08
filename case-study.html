@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Case Study | Wessam Mandour</title>
+<meta name="description" content="Long-form case study: an end-to-end AI recruiting automation platform, designed and built from scratch." />
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel-2:#1c2330; --line:#2a3240;
+    --ink:#e6edf3; --muted:#9aa7b4; --soft:#7d8896; --accent:#5eead4; --accent-2:#7c9eff;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent-2);text-decoration:none}
+  a:hover{text-decoration:underline}
+  nav{position:sticky;top:0;z-index:50;background:rgba(13,17,23,.85);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .in{max-width:820px;margin:0 auto;padding:0 24px;height:56px;
+    display:flex;align-items:center;justify-content:space-between}
+  nav a.back{color:var(--muted);font-family:var(--mono);font-size:.88rem}
+  nav a.back:hover{color:var(--ink);text-decoration:none}
+  nav a.deck{font-family:var(--mono);font-size:.82rem;color:var(--accent);
+    border:1px solid var(--line);background:var(--panel);padding:7px 14px;border-radius:8px}
+  nav a.deck:hover{border-color:var(--accent);text-decoration:none}
+  main{max-width:820px;margin:0 auto;padding:54px 24px 90px}
+  h1{font-size:2.4rem;line-height:1.2;letter-spacing:-0.02em;margin:0 0 10px}
+  h2{font-size:1.5rem;margin:46px 0 6px;letter-spacing:-0.01em;
+    padding-top:22px;border-top:1px solid var(--line)}
+  h3{font-size:1.12rem;margin:26px 0 4px;color:var(--ink)}
+  p{color:#c5d0db;margin:12px 0}
+  strong{color:var(--ink);font-weight:600}
+  em{color:var(--accent)}
+  ul,ol{color:#c5d0db;padding-left:22px}
+  li{margin:7px 0}
+  blockquote{margin:18px 0;padding:14px 20px;background:var(--panel-2);
+    border-left:3px solid var(--accent);border-radius:8px;color:var(--muted)}
+  blockquote p{margin:0;color:var(--muted)}
+  hr{border:none;border-top:1px solid var(--line);margin:34px 0}
+  code{font-family:var(--mono);font-size:.88em;background:var(--panel-2);
+    padding:.12em .4em;border-radius:5px;color:var(--accent)}
+  pre{background:#0a0e14;border:1px solid var(--line);border-radius:12px;
+    padding:18px;overflow:auto;line-height:1.55}
+  pre code{background:none;padding:0;color:#cdd6e0;font-size:.84rem}
+  table{border-collapse:collapse;width:100%;margin:20px 0;font-size:.95rem}
+  th,td{border:1px solid var(--line);padding:9px 13px;text-align:left;vertical-align:top}
+  th{background:var(--panel);color:var(--ink);font-weight:600}
+  td{color:#c5d0db}
+  tr:nth-child(even) td{background:rgba(255,255,255,.015)}
+  .home{display:inline-block;margin-top:40px;font-family:var(--mono);font-size:.9rem;
+    color:var(--accent);border:1px solid var(--line);background:var(--panel);
+    padding:10px 18px;border-radius:8px}
+  .home:hover{border-color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a class="back" href="./">&larr; Back to portfolio</a>
+  <a class="deck" href="deck/AI-Recruiting-Automation-Portfolio.pdf">Download deck (PDF)</a>
+</div></nav>
+<main>
+<h1 id="building-an-ai-recruiting-automation-platform">Building an AI
+Recruiting Automation Platform</h1>
+<p><strong>A case study in AI automation and technical
+documentation.</strong></p>
+<blockquote>
+<p>All client names, database identifiers, and proprietary data have
+been removed. The architecture, engineering decisions, and trade-offs
+are real; code excerpts are illustrative reconstructions, not production
+source.</p>
+</blockquote>
+<hr />
+<h2 id="tldr">TL;DR</h2>
+<p>I built and operate an end-to-end AI recruiting platform that takes a
+job opening from an intake form and runs the entire top-of-funnel
+automatically: candidate outreach, screening-interview ingestion and
+scoring, CV parsing, and DeepSeek-based role matching, writing a ranked,
+<em>explained</em> shortlist back to the recruiting team's
+workspace.</p>
+<p>It is two systems:</p>
+<ul>
+<li><strong>Matching Engine</strong>, Python / FastAPI, DeepSeek. A
+six-stage funnel that turns a free-text job description into a ranked
+shortlist with a written rationale per candidate. A full run takes 90 to
+120 minutes on Railway and posts Slack status updates to the whole
+team.</li>
+<li><strong>Candidate Flow</strong>, Node / Express, 14 independently
+deployed services. A mix of <strong>webhook-triggered</strong>
+automations (parse a CV on submit, score a transcript when it lands) and
+<strong>cron-scheduled</strong> reminder sweeps. Handles 2,000+ WhatsApp
+messages and emails a day (Twilio + Postmark), with a CV parser that
+finishes in under a minute.</li>
+</ul>
+<p>The interesting part is not "it uses an LLM." It's the judgment about
+<strong>when not to</strong>: roughly 90% of the work runs on DeepSeek
+where reasoning is needed, while parsing, filtering, and routing are
+handled by regex and deterministic logic so no tokens are wasted. And it
+all runs <strong>unattended, in production, against rate-limited
+third-party APIs</strong>, staying correct, affordable, and recoverable
+while doing so.</p>
+<hr />
+<h2 id="the-problem">The problem</h2>
+<p>Recruiting top-of-funnel is repetitive, high-volume, and easy to get
+subtly wrong:</p>
+<ul>
+<li>Hundreds of candidates per role, most of them not a fit.</li>
+<li>Outreach (email + WhatsApp) that must respect provider rate caps and
+not double-send.</li>
+<li>Screening interviews that arrive as transcripts and need
+scoring.</li>
+<li>A final matching judgment that a human can <em>trust</em>, a bare
+number isn't enough; a recruiter needs to know <em>why</em>.</li>
+</ul>
+<p>Doing this by hand doesn't scale, and a naïve script ("loop over
+candidates, call the LLM") falls over the moment it meets real volume,
+real rate limits, and real schema drift.</p>
+<hr />
+<h2 id="architecture">Architecture</h2>
+<p>The platform is mostly <strong>event-driven</strong> off the
+recruiting team's workspace, which is the single source of truth. A
+record changes → a webhook fires → exactly one service picks it up, does
+one job, and writes the result back. Time-based work (reminder sweeps)
+runs on a <strong>cron schedule</strong> instead of a webhook.</p>
+<pre><code>Workspace ──webhook──▶  Candidate Flow (14 svc)  ──┐
+                        Email · WhatsApp           │
+                        CV parse · transcript      │
+                        ingest · transcript score  │
+                                                    ├──writes back──▶ Workspace
+Workspace ──webhook──▶  Matching Engine            │
+                        queue → 6-stage funnel ─────┘
+                        rubric (LLM) · score (LLM) ──▶ ranked shortlist + rationale</code></pre>
+<p>Why this shape:</p>
+<ul>
+<li><strong>No shared mutable database.</strong> Services are stateless;
+the workspace holds state. Nothing to corrupt between services.</li>
+<li><strong>Failure isolation.</strong> WhatsApp going down cannot block
+matching. Each service is its own deployment.</li>
+<li><strong>One job per service.</strong> Each branch does a single
+thing well, which keeps each one small enough to fully document and
+reason about.</li>
+</ul>
+<hr />
+<h2 id="the-matching-funnel-stage-by-stage">The matching funnel, stage
+by stage</h2>
+<p>Each stage exists to <strong>narrow the pool before the next, more
+expensive stage runs.</strong> The expensive stage is the LLM;
+everything upstream is about not wasting it.</p>
+<h3 id="stage-1-rubric-extraction-llm">Stage 1, Rubric extraction
+(LLM)</h3>
+<p>A free-text job description is turned into a structured rubric: hard
+gates, core vs. preferred requirements, search keywords, allowed
+locations. This converts fuzzy hiring intent into criteria the rest of
+the pipeline can filter and score against deterministically.</p>
+<h3 id="stage-2-keyword-pool-reduction-cheap-local">Stage 2, Keyword
+pool reduction (cheap, local)</h3>
+<p>A fast keyword-overlap pass drops candidates with no plausible signal
+<strong>before any paid LLM call</strong>. This is the single biggest
+cost lever in the system: it's the difference between scoring 400
+candidates and scoring 60.</p>
+<h3 id="stage-3-hard-eligibility-filters-rules">Stage 3, Hard
+eligibility filters (rules)</h3>
+<p>Non-negotiable gates, language, location, minimum screening score.
+Missing or unexpected data is tolerated and logged, never crashed
+on.</p>
+<h3 id="stage-4-priority-bucketing-and-ordering-heuristics">Stage 4,
+Priority bucketing and ordering (heuristics)</h3>
+<p>Survivors are bucketed by business priority (referrals first, then
+priority backgrounds) and ordered by the best available baseline score.
+This means a <strong>capped</strong> run still spends its budget on the
+highest-value candidates first.</p>
+<h3 id="stage-5-llm-scoring-concurrency-limited-retried">Stage 5, LLM
+scoring (concurrency-limited, retried)</h3>
+<p>Each candidate receives a 0-100 score <strong>and a written
+rationale</strong>, under a global concurrency cap. Transport errors,
+empty completions, and malformed JSON are retried. A single candidate's
+failure is isolated and skipped, it does not kill the run.</p>
+<h3 id="stage-6-qualification-and-backfill-targeting">Stage 6,
+Qualification and backfill (targeting)</h3>
+<p>Above-threshold candidates are linked first. If the qualified pool
+falls short of the run's target, the engine backfills with the
+highest-scoring below-threshold candidates and <strong>logs the fallback
+explicitly</strong>, so the team always gets a usable shortlist, and
+never mistakes a backfill for a true qualifier.</p>
+<hr />
+<h2 id="design-decisions-that-matter">Design decisions that matter</h2>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>Decision</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Idempotency</strong></td>
+<td>Already-scored records are excluded from future runs</td>
+<td>A duplicate webhook or manual re-trigger can't double-contact
+candidates or duplicate matches</td>
+</tr>
+<tr>
+<td><strong>Rate limits</strong></td>
+<td>Sequential job queue, concurrency cap, inter-write delays</td>
+<td>Stay under provider quotas by design instead of getting throttled
+and retried into a storm</td>
+</tr>
+<tr>
+<td><strong>Reliability</strong></td>
+<td>Exponential backoff; empty-response and invalid-JSON hardening</td>
+<td>Third-party flakiness is expected, not exceptional</td>
+</tr>
+<tr>
+<td><strong>Graceful degradation</strong></td>
+<td>Skip individual failures; fail the job only if <em>zero</em> usable
+results</td>
+<td>One bad candidate shouldn't sink a 200-candidate run</td>
+</tr>
+<tr>
+<td><strong>Schema drift</strong></td>
+<td>Ignore missing props, log+skip unexpected types, re-check
+eligibility after cache</td>
+<td>A workspace edit can't silently corrupt a run</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>Cheap filters before expensive ones; candidate caps; TTL cache</td>
+<td>The LLM only sees candidates worth paying to score</td>
+</tr>
+<tr>
+<td><strong>Observability</strong></td>
+<td>Structured logs keyed by page id, email, stage, skip reason</td>
+<td>"Why wasn't this candidate matched?" is answerable from logs
+alone</td>
+</tr>
+<tr>
+<td><strong>Configurability</strong></td>
+<td>One codebase, deployed many times, behavior driven entirely by
+environment variables</td>
+<td>A new client need is met by config and a redeploy, never a fork or a
+code change</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="one-codebase-many-deployments">One codebase, many
+deployments</h2>
+<p>The thing that makes this productizable rather than a one-off:
+<strong>nothing is hard-coded per client.</strong> Every behavior that
+varies is an environment variable, so the same service is deployed as
+many times as needed, each instance configured to a different goal,
+database, or client. The code never forks, which means a fix or
+improvement lands everywhere at once.</p>
+<p>Branches in a project are not "one per client", they target
+<strong>different databases inside the same Notion workspace</strong>.
+The real customization happens at deploy time, through env vars. A few
+concrete examples:</p>
+<ul>
+<li><strong>Same matching engine, two quality tiers.</strong> It runs as
+two deployments from one codebase: one on <strong>DeepSeek
+Flash</strong> for speed and low cost, one on <strong>DeepSeek
+Pro</strong> for tougher roles. A single env var selects the model.</li>
+<li><strong>Same reminder service, deployed three times.</strong> The
+WhatsApp reminder automation is deployed three times, each with a
+different <strong>"hours since submission"</strong> threshold, so
+candidates receive a staggered sequence of nudges, all from identical
+code.</li>
+<li><strong>Same code, different database.</strong> Each branch points
+at a different Notion database in the same workspace via env vars. A new
+database means a new deployment, not a new codebase.</li>
+</ul>
+<p>The payoff is that every client's needs are met by
+<strong>configuration, not custom code</strong>, which keeps all
+deployments consistent and safe to change.</p>
+<hr />
+<h2 id="documentation-as-a-reliability-layer">Documentation as a
+reliability layer</h2>
+<p>Because the system runs unattended, the documentation isn't an
+afterthought, it's how the system stays operable.</p>
+<p>Every service ships an <strong>operational handbook</strong> that
+is:</p>
+<ul>
+<li><strong>Audience-layered</strong>, opens with a one-table overview a
+manager can read, then drills into branch-level specifics an engineer
+needs.</li>
+<li><strong>Operational</strong>, documents exactly which log line
+proves which behavior, so debugging is "grep this string," not "read the
+source."</li>
+<li><strong>Failure-first</strong>, a troubleshooting section maps real
+symptoms to the precise gate that caused them.</li>
+</ul>
+<p>Example troubleshooting entry (sanitized):</p>
+<pre><code>Candidate not considered for a role, check, in order:
+  1. Stage-2 keyword overlap (did any role keyword match the profile?)
+  2. Stage-3 hard filters (language, location, minimum score)
+  3. existing scored row (already processed in a prior run)
+  4. duplicate-email de-duplication
+
+Fewer qualified matches than the run target, expected:
+  Stage 6 backfills below-threshold candidates by descending score
+  and logs `fallback_selected_below_threshold=true` on each.</code></pre>
+<hr />
+<h2 id="results">Results</h2>
+<p>Read this two ways, because two audiences care about two different
+things.</p>
+<p><strong>For the business (the numbers):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Candidate database scanned per matching run</td>
+<td><strong>~40,000 rows</strong></td>
+</tr>
+<tr>
+<td>Time for a full matching run</td>
+<td><strong>90 to 120 minutes</strong> on Railway, depending on settings
+and Notion API volume</td>
+</tr>
+<tr>
+<td>Team visibility</td>
+<td>a <strong>Slack status update</strong> at start, progress, and
+completion, so the whole team sees state</td>
+</tr>
+<tr>
+<td>Communications throughput</td>
+<td><strong>2,000+ WhatsApp messages and emails a day</strong> (Twilio +
+Postmark)</td>
+</tr>
+<tr>
+<td>CV parsing</td>
+<td><strong>under a minute</strong> each, regex-first with AI used only
+where needed</td>
+</tr>
+<tr>
+<td>Manual equivalent</td>
+<td><strong>weeks</strong> of manual work, now collapsed into seconds,
+minutes, or at most a couple of hours</td>
+</tr>
+</tbody>
+</table>
+<p>The headline a non-technical hiring manager remembers: <em>a single
+unattended run on Railway turns a 40,000-row candidate database into a
+ranked, explained shortlist in about two hours, work that is otherwise
+weeks of manual screening, and the whole team is kept in the loop over
+Slack.</em></p>
+<p><strong>For the technical team (why those numbers are even
+possible):</strong></p>
+<ul>
+<li><strong>AI only where it earns its keep:</strong> roughly 90% of the
+work runs on DeepSeek where reasoning is genuinely needed; parsing,
+filtering, and routing run on regex and deterministic logic, so no
+tokens are wasted.</li>
+<li>The 40,000-row scan stays cheap because the funnel runs free filters
+first and only sends the narrowed pool to DeepSeek.</li>
+<li>The run stays inside third-party quotas through a sequential queue,
+concurrency caps, and exponential backoff, rather than hammering APIs
+and getting throttled.</li>
+<li>The run is safe to leave unattended because of idempotent re-runs,
+per-candidate error isolation, and schema-drift defense, so a duplicate
+webhook or a workspace edit cannot corrupt the output.</li>
+<li>Everything is event-driven on Railway: a workspace change fires a
+webhook, the responsible service handles it, and the result is written
+straight back.</li>
+</ul>
+<hr />
+<h2 id="what-this-demonstrates">What this demonstrates</h2>
+<ul>
+<li><strong>AI automation</strong>, 14 integrated, event-driven services
+running unattended in production with idempotency, rate limiting, and
+graceful degradation.</li>
+<li><strong>Technical writing</strong>, audience-layered operational
+handbooks, failure-first troubleshooting, and this case study.</li>
+<li><strong>Cost-aware AI</strong>, DeepSeek reserved for judgment-heavy
+steps and regex everywhere else, an explainable and retried scoring
+pipeline rather than a single API call.</li>
+</ul>
+<hr />
+<p><em>Wessam Mandour · AI Automations Expert &amp; Technical
+Writer</em> <em><a
+href="mailto:wessam.mandour94@gmail.com"><span>wessam.mandour94@gmail.com</span></a>
+· <a href="https://www.linkedin.com/in/wessam-mandour/">LinkedIn</a> ·
+<a href="https://github.com/Wessam-Mandour">GitHub</a></em></p>
+
+<a class="home" href="./">&larr; Back to the portfolio</a>
+</main>
+</body>
+</html>
