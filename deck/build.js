@@ -63,8 +63,8 @@ probs.forEach((p,i)=>{
 s = pptx.addSlide(); bg(s);
 eyebrow(s, "The System"); title(s, "Two systems, one automated funnel");
 const sys = [
-  ["◆  Matching Engine", "Python · FastAPI · DeepSeek", "Ranks candidates with a written rationale each, through a six-stage funnel. A full run takes 90 to 120 min on Railway and posts Slack status to the team."],
-  ["◆  Candidate Flow", "Node · Express · 14 services", "Webhook-triggered automations (CV parse, transcript scoring) plus cron-scheduled reminder sweeps. 2,000+ WhatsApp and email a day; CV parsed in under a minute."],
+  ["◆  Matching Engine", "Python · FastAPI · DeepSeek", "Ranks candidates through a six-stage funnel, scoring upward of 20,000 per run via DeepSeek (20,000+ API calls). 90 to 120 min on Railway, with Slack status to the team."],
+  ["◆  Candidate Flow", "Node · Express · 14 services", "Webhook automations plus cron reminder sweeps. 2,000+ WhatsApp and email a day; CV parsed in under a minute; a completed interview updates Notion in about 60 seconds."],
 ];
 sys.forEach((c,i)=>{
   const x = M + i*5.95; card(s, x, 1.9, 5.6, 2.3);
@@ -72,7 +72,7 @@ sys.forEach((c,i)=>{
   s.addText(c[1], { x:x+0.35, y:2.68, w:5, h:0.35, fontFace:MONO, fontSize:12.5, color:TEAL });
   s.addText(c[2], { x:x+0.35, y:3.12, w:5.0, h:1.1, fontFace:BODY, fontSize:14, color:MUTED });
 });
-const stats = [["40,000","rows scanned / run"],["90-120 min","matching run on Railway"],["2,000+/day","WhatsApp + email"],["<1 min","CV parsed, regex-first"]];
+const stats = [["40,000","rows scanned / run"],["20,000+","scored / run (DeepSeek)"],["90-120 min","matching run on Railway"],["2,000+/day","WhatsApp + email"]];
 stats.forEach((st,i)=>{
   const x = M + i*2.98; card(s, x, 4.5, 2.75, 1.6, PANEL2);
   s.addText(st[0], { x:x, y:4.74, w:2.75, h:0.65, fontFace:H, fontSize:26, bold:true, color:TEAL, align:"center" });
@@ -205,7 +205,7 @@ s.addText(term, {x:tx+0.35, y:2.55, w:tw-0.7, h:4.0, fontFace:MONO, fontSize:12,
 /* ---------- 8 · IMPACT ---------- */
 s = pptx.addSlide(); bg(s);
 eyebrow(s, "Impact"); title(s, "What the automation delivers");
-const imp = [["40,000","candidate rows scanned per matching run"],["90-120 min","full run on Railway, with Slack status"],["2,000+/day","WhatsApp + emails (Twilio + Postmark)"],["<1 min","to parse a CV, regex-first, AI only when needed"]];
+const imp = [["40,000","candidate rows scanned per matching run"],["20,000+","scored per run, 20k+ DeepSeek API calls"],["90-120 min","full run on Railway, with Slack status"],["2,000+/day","WhatsApp + emails (Twilio + Postmark)"]];
 imp.forEach((m,i)=>{
   const x = M + (i%2)*5.95, y = 2.1 + Math.floor(i/2)*2.15;
   card(s, x, y, 5.6, 1.9, PANEL2);

@@ -124,6 +124,24 @@
     opacity:0;pointer-events:none;transition:opacity .25s}
   #toTop.show{opacity:1;pointer-events:auto}
   #toTop:hover{filter:brightness(1.08);text-decoration:none}
+
+  /* ---------- Q&A ---------- */
+  .qa{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    margin:12px 0;padding:0 22px}
+  .qa summary{cursor:pointer;list-style:none;padding:16px 0;font-weight:600;
+    color:var(--ink);font-size:1.04rem;display:flex;gap:11px;align-items:flex-start}
+  .qa summary::-webkit-details-marker{display:none}
+  .qa summary::before{content:"Q";font-family:var(--mono);font-size:.8rem;color:#06231f;
+    background:var(--accent);min-width:22px;height:22px;border-radius:6px;display:inline-flex;
+    align-items:center;justify-content:center;margin-top:2px;font-weight:700;flex:0 0 auto}
+  .qa[open] summary{border-bottom:1px solid var(--line)}
+  .qa .ans{display:flex;gap:11px;padding:15px 0 18px}
+  .qa .ans::before{content:"A";font-family:var(--mono);font-size:.8rem;color:var(--accent);
+    border:1px solid var(--line);min-width:22px;height:22px;border-radius:6px;display:inline-flex;
+    align-items:center;justify-content:center;margin-top:2px;font-weight:700;flex:0 0 auto}
+  .qa .ans p{margin:0;color:var(--muted);font-size:.97rem}
+  .qa .ans p+p{margin-top:10px}
+  .qa .ans b{color:var(--ink);font-weight:600}
 </style>
 </head>
 <body>
@@ -138,6 +156,7 @@
       <a href="#pipeline">Matching Engine</a>
       <a href="#engineering">Under the Hood</a>
       <a href="#config">Config</a>
+      <a href="#detail">In Detail</a>
       <a href="#writing">Writing</a>
       <a href="#stack">Stack</a>
       <a href="cv.html" class="nav-cv" target="_blank" rel="noopener">CV</a>
@@ -176,7 +195,7 @@
     <div class="grid g2" style="margin-top:26px">
       <div class="card">
         <h3><span class="ico">◆</span> Matching Engine</h3>
-        <p><b style="color:var(--ink)">Python · FastAPI · DeepSeek.</b> A webhook-driven service that turns a free-text job description into a structured rubric, then scores and ranks a candidate pool through a six-stage funnel. A full run takes <b>90 to 120 minutes</b> on Railway and posts <b>Slack status updates</b> so the whole team sees a run start, progress, and finish.</p>
+        <p><b style="color:var(--ink)">Python · FastAPI · DeepSeek.</b> A webhook-driven service that turns a free-text job description into a structured rubric, then scores and ranks the candidate pool through a six-stage funnel, making <b>upward of 20,000 DeepSeek API calls per run</b> depending on the role. A full run takes <b>90 to 120 minutes</b> on Railway and posts <b>Slack status updates</b> so the whole team sees it start, progress, and finish.</p>
       </div>
       <div class="card">
         <h3><span class="ico">◆</span> Candidate Flow</h3>
@@ -186,9 +205,9 @@
 
     <div class="metrics" style="margin-top:22px">
       <div class="metric"><div class="n">40,000</div><div class="l">rows scanned per matching run</div></div>
+      <div class="metric"><div class="n">20,000+</div><div class="l">scored per run via DeepSeek</div></div>
       <div class="metric"><div class="n">90-120 min</div><div class="l">full matching run on Railway</div></div>
       <div class="metric"><div class="n">2,000+/day</div><div class="l">WhatsApp + emails sent</div></div>
-      <div class="metric"><div class="n">&lt;1 min</div><div class="l">to parse a CV (regex-first)</div></div>
     </div>
   </div>
 </section>
@@ -204,10 +223,10 @@
       <div class="card">
         <h3 style="color:var(--accent)">For the business</h3>
         <ul class="clean">
-          <li>A single <b>90 to 120 minute</b> run on Railway scans the <b>full 40,000-candidate database</b> and returns a ranked, explained shortlist for a role, work that is otherwise <b>weeks</b> of manual screening.</li>
+          <li>A single <b>90 to 120 minute</b> run on Railway scans the <b>full 40,000-candidate database</b> and scores <b>upward of 20,000</b> of them, returning a ranked, explained shortlist for a role, work that is otherwise <b>weeks</b> of manual screening.</li>
+          <li>Completed interviews are processed automatically: the transcript is fetched in full and the candidate's record and status are updated in Notion within about <b>60 seconds</b>, with no recruiter touching the card.</li>
           <li>Communications run at scale every day: <b>2,000+ WhatsApp messages and emails</b>, with CV parsing done in under a minute.</li>
-          <li>The team stays informed automatically: each matching run posts <b>Slack status updates</b> at start, progress, and completion, so everyone sees state without asking.</li>
-          <li>Every match ships with a written reason, so the team can <b>act on the shortlist immediately</b> instead of re-checking the tool.</li>
+          <li>The team stays informed automatically: each matching run posts <b>Slack status updates</b> at start, progress, and completion, and every match ships with a written reason, so the team can act on the shortlist on sight.</li>
         </ul>
       </div>
       <div class="card">
@@ -215,7 +234,8 @@
         <ul class="clean">
           <li><b>AI only where it earns its keep:</b> DeepSeek is reserved for the judgment-heavy steps; parsing, filtering, and routing are handled by fast deterministic logic and regex, so tokens are never wasted.</li>
           <li>Event-driven: a workspace change fires a webhook, the right Railway service handles it, the result is written back.</li>
-          <li>The run stays inside provider quotas via a <b>sequential queue, concurrency caps, and backoff</b>; the cheap-filter-first funnel narrows the pool before any paid LLM call.</li>
+          <li>A run makes <b>20,000+ DeepSeek API calls</b>, kept inside quota by a <b>sequential queue, concurrency caps, and backoff</b>; the cheap-filter-first funnel narrows the pool before any paid call.</li>
+          <li>Transcript fetches <b>retry for up to 10 minutes</b> until the full transcript is guaranteed, so scoring never runs on a partial interview.</li>
           <li>Idempotent re-runs, per-candidate error isolation, and schema-drift defense keep an unattended run from corrupting data.</li>
         </ul>
       </div>
@@ -385,6 +405,57 @@
       <div class="card"><h3>Same code, different database</h3><p>Each branch points at a different <b>Notion database in the same workspace</b> through env vars. New database, new deployment, no code change.</p></div>
     </div>
     <p class="callout" style="margin-top:20px">⚙︎ The payoff: when a client wants the same automation pointed at a <b>different database</b>, tuned to a <b>different setting</b>, or run on a <b>different reminder timeframe</b>, it redeploys to a new space in about <b>5 minutes</b>. New environment variables and a redeploy, never new code.</p>
+  </div>
+</section>
+
+<!-- ============ IN DETAIL (Q&A) ============ -->
+<section id="detail">
+  <div class="wrap">
+    <p class="eyebrow">In Detail</p>
+    <h2>How each automation actually works</h2>
+    <p class="lede">The short version is above. Here is what happens step by step, from a candidate applying to a ranked shortlist landing in the team's workspace.</p>
+
+    <div style="margin-top:24px">
+      <details class="qa" open>
+        <summary>What happens the moment a candidate applies?</summary>
+        <div class="ans"><p>A webhook fires the CV-parsing service the instant an application lands. It pulls the raw CV and extracts a structured profile, contact details, experience, skills, and LinkedIn or portfolio links, then writes it straight back to Notion in <b>under a minute</b>. The parsing is done with <b>regex and deterministic logic</b>; AI is only called for the parts that genuinely need reasoning, so no tokens are spent on data a pattern can extract reliably.</p></div>
+      </details>
+
+      <details class="qa" open>
+        <summary>How are candidates contacted, and how is that kept under control?</summary>
+        <div class="ans"><p>Outreach runs across <b>email (Postmark)</b> and <b>WhatsApp (Twilio)</b>. First invites and follow-up reminders are sent two ways: instantly on a webhook, and on a <b>cron schedule</b>, a reminder sweep runs on a timer, checks who is due based on a configurable "hours since submission" threshold, and sends the next nudge.</p><p>The platform handles <b>2,000+ messages a day</b> while staying inside provider caps through hourly and daily rate limits, retries with exponential backoff, cooldowns, and de-duplication, so a candidate is never double-contacted and a provider is never hammered into throttling.</p></div>
+      </details>
+
+      <details class="qa" open>
+        <summary>What happens when a screening interview is completed?</summary>
+        <div class="ans"><p>The interview platform fires a webhook on completion, but the full transcript is rarely ready that instant. So the service <b>keeps retrying the transcript fetch for up to 10 minutes</b>, polling until the <b>complete</b> transcript is guaranteed, it will not proceed on a partial one. Acting on half a transcript would mean scoring a candidate on half an interview, so this guarantee matters.</p><p>Once the full transcript and interview details are confirmed, it writes them to the candidate's Notion record and <b>changes their status automatically</b>, typically within about <b>60 seconds</b> of the interview finishing. No recruiter has to move the card.</p></div>
+      </details>
+
+      <details class="qa" open>
+        <summary>How is an interview actually scored?</summary>
+        <div class="ans"><p>Once the complete transcript is in, a separate <b>DeepSeek-powered</b> service scores it against the role, covering fit, consistency, and communication clarity, and writes a structured score plus a <b>written rationale</b> back to Notion. Transport errors, empty completions, and invalid JSON are retried; one bad call is skipped rather than allowed to block the rest.</p></div>
+      </details>
+
+      <details class="qa" open>
+        <summary>How does the matching engine scale to a 40,000-candidate database?</summary>
+        <div class="ans"><p>A single run scans up to <b>~40,000 candidate rows</b> and, depending on the role's requirements, scores <b>upward of 20,000 of them</b>, that is 20,000+ DeepSeek API calls in one run. To make that affordable and fast, a <b>six-stage funnel</b> does cheap, deterministic work first: it builds a rubric from the job description, drops no-signal candidates by keyword overlap, applies hard eligibility gates, and orders the rest by priority, so the model only ever sees candidates with real signal.</p><p>The full run completes in <b>90 to 120 minutes</b> on Railway and posts <b>Slack status updates</b> at start, progress, and completion, so the whole team can watch it run and know the moment it finishes.</p></div>
+      </details>
+
+      <details class="qa">
+        <summary>How do 20,000+ API calls per run not fail or blow the budget?</summary>
+        <div class="ans"><p>Calls run through a <b>sequential queue</b> with concurrency caps, inter-write delays, and exponential backoff to stay inside DeepSeek and Notion quotas instead of getting throttled. Each candidate is scored in <b>isolation</b>, so a single failure is skipped, not fatal; the run only fails if zero usable scores come back. Cheap filters and a TTL cache keep the model from ever re-seeing candidates that were already excluded or scored.</p></div>
+      </details>
+
+      <details class="qa">
+        <summary>What happens if a run is interrupted, or a webhook fires twice?</summary>
+        <div class="ans"><p>Every write is <b>idempotent</b>. Already-scored candidates are skipped on the next run, so a duplicate webhook, a manual re-trigger, or a crash-and-restart never double-contacts a candidate or duplicates a match. A re-run safely resumes instead of starting damage.</p></div>
+      </details>
+
+      <details class="qa">
+        <summary>How fast can it be adapted to a new client or database?</summary>
+        <div class="ans"><p>Nothing is hard-coded. Behavior is driven entirely by <b>environment variables</b>, so the same codebase redeploys to a new database, setting, or reminder timeframe in about <b>5 minutes</b>, for example the matching engine on DeepSeek Flash versus Pro, or the WhatsApp reminder service deployed three times with different "hours since submission" thresholds.</p></div>
+      </details>
+    </div>
   </div>
 </section>
 

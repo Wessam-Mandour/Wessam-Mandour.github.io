@@ -51,6 +51,7 @@
   th{background:var(--panel);color:var(--ink);font-weight:600}
   td{color:#c5d0db}
   tr:nth-child(even) td{background:rgba(255,255,255,.015)}
+  /* Q&A: markdown renders these as bold paragraphs; style the bold question lead */
   .home{display:inline-block;margin-top:40px;font-family:var(--mono);font-size:.9rem;
     color:var(--accent);border:1px solid var(--line);background:var(--panel);
     padding:10px 18px;border-radius:8px}
@@ -85,15 +86,18 @@ workspace.</p>
 <ul>
 <li><strong>Matching Engine</strong>, Python / FastAPI, DeepSeek. A
 six-stage funnel that turns a free-text job description into a ranked
-shortlist with a written rationale per candidate. A full run takes 90 to
-120 minutes on Railway and posts Slack status updates to the whole
-team.</li>
+shortlist with a written rationale per candidate. A single run scans up
+to ~40,000 candidate rows and, depending on the role, scores
+<strong>upward of 20,000 of them, that is 20,000+ DeepSeek API calls in
+one run</strong>. A full run takes 90 to 120 minutes on Railway and
+posts Slack status updates to the whole team.</li>
 <li><strong>Candidate Flow</strong>, Node / Express, 14 independently
 deployed services. A mix of <strong>webhook-triggered</strong>
-automations (parse a CV on submit, score a transcript when it lands) and
-<strong>cron-scheduled</strong> reminder sweeps. Handles 2,000+ WhatsApp
-messages and emails a day (Twilio + Postmark), with a CV parser that
-finishes in under a minute.</li>
+automations (parse a CV on submit, fetch and score an interview
+transcript when it lands) and <strong>cron-scheduled</strong> reminder
+sweeps. Handles 2,000+ WhatsApp messages and emails a day (Twilio +
+Postmark), parses a CV in under a minute, and updates Notion with a
+completed interview's details and status within about 60 seconds.</li>
 </ul>
 <p>The interesting part is not "it uses an LLM." It's the judgment about
 <strong>when not to</strong>: roughly 90% of the work runs on DeepSeek
@@ -159,8 +163,9 @@ the pipeline can filter and score against deterministically.</p>
 pool reduction (cheap, local)</h3>
 <p>A fast keyword-overlap pass drops candidates with no plausible signal
 <strong>before any paid LLM call</strong>. This is the single biggest
-cost lever in the system: it's the difference between scoring 400
-candidates and scoring 60.</p>
+cost lever in the system: depending on the role, it is the difference
+between sending the whole database to the model and sending only the
+candidates with real signal.</p>
 <h3 id="stage-3-hard-eligibility-filters-rules">Stage 3, Hard
 eligibility filters (rules)</h3>
 <p>Non-negotiable gates, language, location, minimum screening score.
@@ -172,10 +177,12 @@ Priority bucketing and ordering (heuristics)</h3>
 priority backgrounds) and ordered by the best available baseline score.
 This means a <strong>capped</strong> run still spends its budget on the
 highest-value candidates first.</p>
-<h3 id="stage-5-llm-scoring-concurrency-limited-retried">Stage 5, LLM
-scoring (concurrency-limited, retried)</h3>
-<p>Each candidate receives a 0-100 score <strong>and a written
-rationale</strong>, under a global concurrency cap. Transport errors,
+<h3 id="stage-5-deepseek-scoring-concurrency-limited-retried">Stage 5,
+DeepSeek scoring (concurrency-limited, retried)</h3>
+<p>Each surviving candidate receives a 0-100 score <strong>and a written
+rationale</strong> from DeepSeek, under a global concurrency cap. For a
+broad role this can be <strong>upward of 20,000 candidates, and
+therefore 20,000+ API calls, in a single run</strong>. Transport errors,
 empty completions, and malformed JSON are retried. A single candidate's
 failure is isolated and skipped, it does not kill the run.</p>
 <h3 id="stage-6-qualification-and-backfill-targeting">Stage 6,
@@ -323,9 +330,23 @@ things.</p>
 <td><strong>~40,000 rows</strong></td>
 </tr>
 <tr>
+<td>Candidates scored per run</td>
+<td><strong>upward of 20,000</strong> (20,000+ DeepSeek API calls),
+depending on the role</td>
+</tr>
+<tr>
 <td>Time for a full matching run</td>
 <td><strong>90 to 120 minutes</strong> on Railway, depending on settings
 and Notion API volume</td>
+</tr>
+<tr>
+<td>Completed interview to updated Notion record + status</td>
+<td>about <strong>60 seconds</strong></td>
+</tr>
+<tr>
+<td>Transcript fetch reliability</td>
+<td><strong>retried for up to 10 minutes</strong> until the full
+transcript is guaranteed</td>
 </tr>
 <tr>
 <td>Team visibility</td>
@@ -373,6 +394,75 @@ webhook or a workspace edit cannot corrupt the output.</li>
 webhook, the responsible service handles it, and the result is written
 straight back.</li>
 </ul>
+<hr />
+<h2 id="in-detail-step-by-step">In detail, step by step</h2>
+<p><strong>Q: What happens the moment a candidate applies?</strong></p>
+<p>A webhook fires the CV-parsing service the instant an application
+lands. It pulls the raw CV and extracts a structured profile (contact
+details, experience, skills, LinkedIn and portfolio links) and writes it
+back to Notion in under a minute. The parsing is done with regex and
+deterministic logic; AI is only called for the parts that genuinely need
+reasoning, so no tokens are spent on data a pattern can extract
+reliably.</p>
+<p><strong>Q: How are candidates contacted, and how is that kept under
+control?</strong></p>
+<p>Outreach runs across email (Postmark) and WhatsApp (Twilio). First
+invites and follow-up reminders are sent two ways: instantly on a
+webhook, and on a cron schedule, where a reminder sweep runs on a timer,
+checks who is due based on a configurable "hours since submission"
+threshold, and sends the next nudge. The platform handles 2,000+
+messages a day while staying inside provider caps through hourly and
+daily rate limits, retries with exponential backoff, cooldowns, and
+de-duplication, so a candidate is never double-contacted.</p>
+<p><strong>Q: What happens when a screening interview is
+completed?</strong></p>
+<p>The interview platform fires a webhook on completion, but the full
+transcript is rarely ready that instant. So the service keeps retrying
+the transcript fetch for up to 10 minutes, polling until the complete
+transcript is guaranteed; it will not proceed on a partial one, because
+scoring half an interview would mean scoring the candidate on half their
+answers. Once the full transcript and interview details are confirmed,
+it writes them to the candidate's Notion record and changes their status
+automatically, typically within about 60 seconds of the interview
+finishing. No recruiter has to move the card.</p>
+<p><strong>Q: How is an interview scored?</strong></p>
+<p>Once the complete transcript is in, a separate DeepSeek-powered
+service scores it against the role (fit, consistency, communication
+clarity) and writes a structured score plus a written rationale back to
+Notion. Transport errors, empty completions, and invalid JSON are
+retried; one bad call is skipped rather than allowed to block the
+rest.</p>
+<p><strong>Q: How does the matching engine scale to a 40,000-candidate
+database?</strong></p>
+<p>A single run scans up to ~40,000 candidate rows and, depending on the
+role's requirements, scores upward of 20,000 of them, which is 20,000+
+DeepSeek API calls in one run. To make that affordable and fast, a
+six-stage funnel does cheap, deterministic work first (rubric
+extraction, keyword reduction, hard eligibility gates, priority
+ordering) so the model only ever sees candidates with real signal. The
+full run completes in 90 to 120 minutes on Railway and posts Slack
+status updates at start, progress, and completion.</p>
+<p><strong>Q: How do 20,000+ API calls per run not fail or blow the
+budget?</strong></p>
+<p>Calls run through a sequential queue with concurrency caps,
+inter-write delays, and exponential backoff to stay inside DeepSeek and
+Notion quotas. Each candidate is scored in isolation, so a single
+failure is skipped, not fatal; the run only fails if zero usable scores
+come back. Cheap filters and a TTL cache keep the model from ever
+re-seeing candidates that were already excluded or scored.</p>
+<p><strong>Q: What happens if a run is interrupted, or a webhook fires
+twice?</strong></p>
+<p>Every write is idempotent. Already-scored candidates are skipped on
+the next run, so a duplicate webhook, a manual re-trigger, or a
+crash-and-restart never double-contacts a candidate or duplicates a
+match.</p>
+<p><strong>Q: How fast can it be adapted to a new client or
+database?</strong></p>
+<p>Nothing is hard-coded. Behavior is driven entirely by environment
+variables, so the same codebase redeploys to a new database, setting, or
+reminder timeframe in about 5 minutes, for example the matching engine
+on DeepSeek Flash versus Pro, or the WhatsApp reminder service deployed
+three times with different "hours since submission" thresholds.</p>
 <hr />
 <h2 id="what-this-demonstrates">What this demonstrates</h2>
 <ul>
