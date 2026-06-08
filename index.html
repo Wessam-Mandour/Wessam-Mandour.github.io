@@ -125,6 +125,7 @@
       <a href="#architecture">Architecture</a>
       <a href="#pipeline">Matching Engine</a>
       <a href="#engineering">Under the Hood</a>
+      <a href="#config">Config</a>
       <a href="#writing">Writing</a>
       <a href="#stack">Stack</a>
     </div>
@@ -164,7 +165,7 @@
       </div>
       <div class="card">
         <h3><span class="ico">◆</span> Candidate Flow</h3>
-        <p><b style="color:var(--ink)">Node · Express · 14 services.</b> The communications and data pipeline: <b>2,000+ WhatsApp messages and emails a day</b> (Twilio + Postmark), interview-transcript ingestion and scoring, and a CV parser that finishes in <b>under a minute</b>. Most tasks run in seconds; each automation is isolated as its own service.</p>
+        <p><b style="color:var(--ink)">Node · Express · 14 services.</b> A mix of <b>webhook-triggered</b> automations (parse a CV the moment it is submitted, score an interview transcript when it lands) and <b>cron-scheduled</b> reminder sweeps that run on a timer. Sends <b>2,000+ WhatsApp messages and emails a day</b> (Twilio + Postmark); the CV parser finishes in <b>under a minute</b>.</p>
       </div>
     </div>
 
@@ -212,7 +213,7 @@
   <div class="wrap">
     <p class="eyebrow">Architecture</p>
     <h2>How data moves through the platform</h2>
-    <p class="lede">Everything is event-driven off the recruiting team's workspace. A change to a record fires a webhook; the right service picks it up, does one job well, and writes the result back. No shared database to corrupt, no monolith to coordinate.</p>
+    <p class="lede">Most work is event-driven off the recruiting team's workspace: a record changes, a webhook fires, the right service picks it up, does one job well, and writes the result back. Time-based reminder sweeps run on a <b>cron schedule</b> instead. No shared database to corrupt, no monolith to coordinate.</p>
 
     <div class="diagram" style="margin-top:24px">
       <svg viewBox="0 0 980 470" role="img" aria-label="System architecture diagram">
@@ -354,7 +355,21 @@
         <p>Structured logs trace every record by page id, email, stage, and skip reason. Each run also posts <b>Slack status updates</b> at start, progress, and finish, so the whole team sees state without opening a log.</p></div>
     </div>
 
-    <div class="callout" style="margin-top:22px">⚙︎ <b>Multi-tenant by deployment.</b> Each workflow is its own Git branch deployed as its own service, so a client with a different data schema or matching rule gets a tailored deployment without forking the codebase or risking the others. Configuration lives entirely in environment variables; no code change ships a new tenant.</div>
+  </div>
+</section>
+
+<!-- ============ CONFIGURABILITY ============ -->
+<section id="config">
+  <div class="wrap">
+    <p class="eyebrow">Configurable by Design</p>
+    <h2>One codebase, many deployments, zero forks</h2>
+    <p class="lede">Nothing is hard-coded per client. Behavior is driven entirely by <b>environment variables</b>, so the same service is deployed as many times as needed, each instance tuned to a different goal, database, or client, by changing config and redeploying. The code never forks.</p>
+    <div class="grid g3" style="margin-top:24px">
+      <div class="card"><h3>Same engine, Flash or Pro</h3><p>The matching engine runs as two deployments from one codebase: one on <b>DeepSeek Flash</b> for speed and low cost, one on <b>DeepSeek Pro</b> for tougher roles. A single env var picks the model.</p></div>
+      <div class="card"><h3>One reminder, deployed 3×</h3><p>The WhatsApp reminder service is deployed three times, each with a different <b>"hours since submission"</b> threshold, so candidates get a staggered sequence of nudges, all from the same code.</p></div>
+      <div class="card"><h3>Same code, different database</h3><p>Each branch points at a different <b>Notion database in the same workspace</b> through env vars. New database, new deployment, no code change.</p></div>
+    </div>
+    <p class="callout" style="margin-top:20px">⚙︎ The payoff: a new client need is met by <b>configuration, not custom code</b>, which keeps every deployment in sync and safe to change.</p>
   </div>
 </section>
 
@@ -403,6 +418,8 @@
       <span class="chip">Hireflix · Fireflies <span>· transcripts</span></span>
       <span class="chip">Railway <span>· deploy</span></span>
       <span class="chip">Webhooks <span>· event-driven</span></span>
+      <span class="chip">Cron <span>· scheduled jobs</span></span>
+      <span class="chip">Env-config <span>· redeployable</span></span>
       <span class="chip">Regex <span>· deterministic parsing</span></span>
     </div>
     <ul class="clean" style="margin-top:24px">

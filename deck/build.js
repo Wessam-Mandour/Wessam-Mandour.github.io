@@ -64,7 +64,7 @@ s = pptx.addSlide(); bg(s);
 eyebrow(s, "The System"); title(s, "Two systems, one automated funnel");
 const sys = [
   ["◆  Matching Engine", "Python · FastAPI · DeepSeek", "Ranks candidates with a written rationale each, through a six-stage funnel. A full run takes 90 to 120 min on Railway and posts Slack status to the team."],
-  ["◆  Candidate Flow", "Node · Express · 14 services", "2,000+ WhatsApp messages and emails a day (Twilio + Postmark), transcript scoring, and a CV parser that finishes in under a minute."],
+  ["◆  Candidate Flow", "Node · Express · 14 services", "Webhook-triggered automations (CV parse, transcript scoring) plus cron-scheduled reminder sweeps. 2,000+ WhatsApp and email a day; CV parsed in under a minute."],
 ];
 sys.forEach((c,i)=>{
   const x = M + i*5.95; card(s, x, 1.9, 5.6, 2.3);
@@ -78,7 +78,7 @@ stats.forEach((st,i)=>{
   s.addText(st[0], { x:x, y:4.74, w:2.75, h:0.65, fontFace:H, fontSize:26, bold:true, color:TEAL, align:"center" });
   s.addText(st[1], { x:x, y:5.48, w:2.75, h:0.4, fontFace:BODY, fontSize:12, color:MUTED, align:"center" });
 });
-s.addText("Deployed on Railway, triggered by webhooks, runs unattended, with Slack status to the whole team.",
+s.addText("Deployed on Railway, triggered by webhooks and cron schedules, with Slack status to the whole team.",
   { x:M, y:6.45, w:11.9, h:0.4, fontFace:BODY, fontSize:13, italic:true, color:SOFT, align:"center" });
 
 /* ---------- 4 · ARCHITECTURE ---------- */
@@ -152,6 +152,24 @@ eng.forEach((e,i)=>{
   s.addText(e[1],{x:x+0.3,y:y+0.95,w:3.2,h:0.4,fontFace:H,fontSize:15,bold:true,color:INK});
   s.addText(e[2],{x:x+0.3,y:y+1.32,w:3.2,h:0.5,fontFace:BODY,fontSize:12,color:MUTED});
 });
+
+/* ---------- 6b · CONFIGURABILITY ---------- */
+s = pptx.addSlide(); bg(s);
+eyebrow(s, "Configurable by Design"); title(s, "One codebase, many deployments, zero forks");
+s.addText("Nothing is hard-coded per client. Behavior is driven entirely by environment variables, so the same service is deployed many times, each tuned to a different goal, by changing config and redeploying.",
+  { x:M, y:1.8, w:11.9, h:0.7, fontFace:BODY, fontSize:15, italic:true, color:MUTED });
+const cfg = [
+  ["Same engine, Flash or Pro","One codebase, two deployments: DeepSeek Flash for speed and cost, DeepSeek Pro for tougher roles. A single env var picks the model."],
+  ["One reminder, deployed 3×","The WhatsApp reminder service runs three times, each with a different \"hours since submission\" threshold, for a staggered reminder sequence."],
+  ["Same code, new database","Each branch points at a different Notion database in the same workspace via env vars. New database, new deploy, no code change."],
+];
+cfg.forEach((c,i)=>{
+  const x = M + i*3.98; card(s, x, 2.7, 3.7, 2.7, PANEL2);
+  s.addText(c[0],{x:x+0.3,y:3.0,w:3.1,h:0.7,fontFace:H,fontSize:16,bold:true,color:TEAL});
+  s.addText(c[1],{x:x+0.3,y:3.75,w:3.1,h:1.5,fontFace:BODY,fontSize:13,color:MUTED});
+});
+s.addText("Every client need met by configuration, not custom code, so all deployments stay consistent and safe to change.",
+  { x:M, y:5.75, w:11.9, h:0.4, fontFace:BODY, fontSize:13, italic:true, color:SOFT, align:"center" });
 
 /* ---------- 7 · DOCUMENTATION ---------- */
 s = pptx.addSlide(); bg(s);

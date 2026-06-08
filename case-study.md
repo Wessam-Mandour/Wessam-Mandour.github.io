@@ -13,7 +13,7 @@ I built and operate an end-to-end AI recruiting platform that takes a job openin
 It is two systems:
 
 - **Matching Engine**, Python / FastAPI, DeepSeek. A six-stage funnel that turns a free-text job description into a ranked shortlist with a written rationale per candidate. A full run takes 90 to 120 minutes on Railway and posts Slack status updates to the whole team.
-- **Candidate Flow**, Node / Express, 14 independently deployed services. Handles 2,000+ WhatsApp messages and emails a day (Twilio + Postmark), transcript ingestion and scoring, and a CV parser that finishes in under a minute.
+- **Candidate Flow**, Node / Express, 14 independently deployed services. A mix of **webhook-triggered** automations (parse a CV on submit, score a transcript when it lands) and **cron-scheduled** reminder sweeps. Handles 2,000+ WhatsApp messages and emails a day (Twilio + Postmark), with a CV parser that finishes in under a minute.
 
 The interesting part is not "it uses an LLM." It's the judgment about **when not to**: roughly 90% of the work runs on DeepSeek where reasoning is needed, while parsing, filtering, and routing are handled by regex and deterministic logic so no tokens are wasted. And it all runs **unattended, in production, against rate-limited third-party APIs**, staying correct, affordable, and recoverable while doing so.
 
@@ -34,7 +34,7 @@ Doing this by hand doesn't scale, and a naïve script ("loop over candidates, ca
 
 ## Architecture
 
-The platform is **event-driven** off the recruiting team's workspace, which is the single source of truth. A record changes → a webhook fires → exactly one service picks it up, does one job, and writes the result back.
+The platform is mostly **event-driven** off the recruiting team's workspace, which is the single source of truth. A record changes → a webhook fires → exactly one service picks it up, does one job, and writes the result back. Time-based work (reminder sweeps) runs on a **cron schedule** instead of a webhook.
 
 ```
 Workspace ──webhook──▶  Candidate Flow (14 svc)  ──┐
@@ -90,7 +90,21 @@ Above-threshold candidates are linked first. If the qualified pool falls short o
 | **Schema drift** | Ignore missing props, log+skip unexpected types, re-check eligibility after cache | A workspace edit can't silently corrupt a run |
 | **Cost** | Cheap filters before expensive ones; candidate caps; TTL cache | The LLM only sees candidates worth paying to score |
 | **Observability** | Structured logs keyed by page id, email, stage, skip reason | "Why wasn't this candidate matched?" is answerable from logs alone |
-| **Multi-tenancy** | Branch-per-workflow, each deployed as its own service; config via env vars | A client with a different schema gets a tailored deployment with no fork and no code change |
+| **Configurability** | One codebase, deployed many times, behavior driven entirely by environment variables | A new client need is met by config and a redeploy, never a fork or a code change |
+
+---
+
+## One codebase, many deployments
+
+The thing that makes this productizable rather than a one-off: **nothing is hard-coded per client.** Every behavior that varies is an environment variable, so the same service is deployed as many times as needed, each instance configured to a different goal, database, or client. The code never forks, which means a fix or improvement lands everywhere at once.
+
+Branches in a project are not "one per client", they target **different databases inside the same Notion workspace**. The real customization happens at deploy time, through env vars. A few concrete examples:
+
+- **Same matching engine, two quality tiers.** It runs as two deployments from one codebase: one on **DeepSeek Flash** for speed and low cost, one on **DeepSeek Pro** for tougher roles. A single env var selects the model.
+- **Same reminder service, deployed three times.** The WhatsApp reminder automation is deployed three times, each with a different **"hours since submission"** threshold, so candidates receive a staggered sequence of nudges, all from identical code.
+- **Same code, different database.** Each branch points at a different Notion database in the same workspace via env vars. A new database means a new deployment, not a new codebase.
+
+The payoff is that every client's needs are met by **configuration, not custom code**, which keeps all deployments consistent and safe to change.
 
 ---
 
