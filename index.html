@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Wessam Mandour — AI Automation Engineer & Technical Writer</title>
+<title>Wessam Mandour | AI Automation Engineer & Technical Writer</title>
 <meta name="description" content="Case study: an end-to-end AI recruiting automation platform. Multi-stage LLM matching pipeline, comms automation across 14 services, and the documentation that ships with it." />
 <style>
   :root{
@@ -121,6 +121,7 @@
     <span class="brand">WM</span>
     <div class="links">
       <a href="#system">System</a>
+      <a href="#impact">Impact</a>
       <a href="#architecture">Architecture</a>
       <a href="#pipeline">Matching Engine</a>
       <a href="#engineering">Engineering</a>
@@ -135,7 +136,7 @@
   <div class="wrap">
     <p class="eyebrow">AI Automation Engineering &amp; Technical Writing</p>
     <h1>Wessam Mandour</h1>
-    <p class="lead">I <b>architect, build, and ship</b> production automation systems from scratch — then document them well enough to run unattended. This is a case study of an end-to-end <b>AI recruiting platform</b> I designed and built solo: a multi-stage LLM matching engine and a communications pipeline running across 14 deployed services.</p>
+    <p class="lead">I <b>architect, build, and ship</b> production automation systems from scratch, then document them well enough to run unattended. This is a case study of an end-to-end <b>AI recruiting platform</b> I designed and built solo: a multi-stage LLM matching engine and a communications pipeline running across 14 deployed services.</p>
     <div class="roles">
       <span class="pill">AI Automation Engineer</span>
       <span class="pill">Senior Technical Writer</span>
@@ -154,7 +155,7 @@
   <div class="wrap">
     <p class="eyebrow">The System</p>
     <h2>An AI recruiting automation platform</h2>
-    <p class="lede">A job opening enters as a form submission. From there, the platform runs the entire top-of-funnel with no manual steps: it sources and contacts candidates, ingests and scores their screening interviews, parses their CVs, and matches them to the role with an LLM — writing back a ranked, <i>explained</i> shortlist for the recruiting team. Two systems do the work.</p>
+    <p class="lede">A job opening enters as a form submission. From there, the platform runs the entire top-of-funnel with no manual steps: it sources and contacts candidates, ingests and scores their screening interviews, parses their CVs, and matches them to the role with an LLM, writing back a ranked, <i>explained</i> shortlist for the recruiting team. Two systems do the work.</p>
 
     <div class="grid g2" style="margin-top:26px">
       <div class="card">
@@ -163,17 +164,46 @@
       </div>
       <div class="card">
         <h3><span class="ico">◆</span> Candidate Flow</h3>
-        <p><b style="color:var(--ink)">Node · Express · 14 deployed services.</b> The communications and data pipeline around the engine: batched email and WhatsApp outreach, interview-transcript ingestion and scoring, and CV parsing — each automation isolated as its own service.</p>
+        <p><b style="color:var(--ink)">Node · Express · 14 deployed services.</b> The communications and data pipeline around the engine: batched email and WhatsApp outreach, interview-transcript ingestion and scoring, and CV parsing, each automation isolated as its own service.</p>
       </div>
     </div>
 
     <div class="metrics" style="margin-top:22px">
-      <div class="metric"><div class="n fillme">14</div><div class="l">independently deployed services</div></div>
-      <div class="metric"><div class="n fillme">6</div><div class="l">stage matching funnel</div></div>
-      <div class="metric"><div class="n fillme">100s</div><div class="l">of candidates scored per run</div></div>
-      <div class="metric"><div class="n fillme">~hrs→min</div><div class="l">manual shortlisting eliminated</div></div>
+      <div class="metric"><div class="n">40,000</div><div class="l">candidate rows scanned per run</div></div>
+      <div class="metric"><div class="n">~2 hrs</div><div class="l">full run, unattended on Railway</div></div>
+      <div class="metric"><div class="n">14</div><div class="l">services live on Railway</div></div>
+      <div class="metric"><div class="n">weeks→hrs</div><div class="l">recruiter screening per role</div></div>
     </div>
-    <p class="callout warn" style="margin-top:16px">⚑ <b>For you, Wessam:</b> the four numbers above are dashed-outlined placeholders. Swap them for your real figures (candidates/week, hours saved, time-to-shortlist, recruiter headcount supported). Honest, specific numbers are what make a non-technical hiring manager remember you.</p>
+  </div>
+</section>
+
+<!-- ============ IMPACT ============ -->
+<section id="impact">
+  <div class="wrap">
+    <p class="eyebrow">Impact</p>
+    <h2>What it delivers, and how it works</h2>
+    <p class="lede">Two audiences read a system like this differently. Business owners want the outcome; engineering leaders want the workflow that produces it. Here is both.</p>
+
+    <div class="grid g2" style="margin-top:24px">
+      <div class="card">
+        <h3 style="color:var(--accent)">For the business</h3>
+        <ul class="clean">
+          <li>One <b>2-hour run</b> on Railway scans the <b>full 40,000-candidate database</b> and returns a ranked, explained shortlist for a role.</li>
+          <li>Screening that volume by hand is <b>weeks of recruiter time</b>; the platform collapses it into a single unattended run that needs no babysitting.</li>
+          <li>Every match ships with a written reason, so the team can <b>act on the shortlist immediately</b> instead of re-checking the tool.</li>
+          <li>Runs <b>24/7 on Railway</b>, triggered automatically by webhooks. No one has to start it.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--accent)">For the engineering team</h3>
+        <ul class="clean">
+          <li>Event-driven: a workspace change fires a webhook, the right Railway service handles it, the result is written back.</li>
+          <li>The 40,000-row scan is made affordable by a <b>cheap-filter-first funnel</b> that narrows the pool before any paid LLM call.</li>
+          <li>The 2-hour run stays inside provider quotas via a <b>sequential queue, concurrency caps, and backoff</b>.</li>
+          <li>Idempotent re-runs, per-candidate error isolation, and schema-drift defense keep an unattended run from corrupting data.</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -261,32 +291,32 @@
   <div class="wrap">
     <p class="eyebrow">Deep Dive · The Matching Engine</p>
     <h2>Six stages from job description to ranked shortlist</h2>
-    <p class="lede">The hard problem isn't calling an LLM — it's calling it <i>responsibly</i> on a large pool: cheaply, in priority order, with explainable output, and without melting API quotas. Each stage narrows the pool before the next, expensive stage runs.</p>
+    <p class="lede">The hard problem isn't calling an LLM, it's calling it <i>responsibly</i> on a large pool: cheaply, in priority order, with explainable output, and without melting API quotas. Each stage narrows the pool before the next, expensive stage runs.</p>
 
     <div style="margin-top:22px">
       <div class="stage"><div class="num">1</div><div class="body">
-        <h3>Rubric extraction <span class="tag">— LLM</span></h3>
+        <h3>Rubric extraction <span class="tag">LLM</span></h3>
         <p>A free-text job description becomes a structured rubric: hard gates, core vs. preferred requirements, search keywords, and allowed locations. This turns fuzzy hiring intent into something the rest of the pipeline can filter and score against deterministically.</p>
       </div></div>
       <div class="stage"><div class="num">2</div><div class="body">
-        <h3>Keyword pool reduction <span class="tag">— cheap filter</span></h3>
+        <h3>Keyword pool reduction <span class="tag">cheap filter</span></h3>
         <p>A fast, local keyword-overlap pass drops candidates with no plausible signal <i>before</i> any paid LLM call. This is the single biggest cost-control lever in the system.</p>
       </div></div>
       <div class="stage"><div class="num">3</div><div class="body">
-        <h3>Hard eligibility filters <span class="tag">— rules</span></h3>
-        <p>Non-negotiable gates — language, location, minimum screening score — applied as rules. Missing or unexpected data fields are tolerated and logged, never crashed on (see <a href="#engineering">schema-drift defense</a>).</p>
+        <h3>Hard eligibility filters <span class="tag">rules</span></h3>
+        <p>Non-negotiable gates, language, location, minimum screening score, applied as rules. Missing or unexpected data fields are tolerated and logged, never crashed on (see <a href="#engineering">schema-drift defense</a>).</p>
       </div></div>
       <div class="stage"><div class="num">4</div><div class="body">
-        <h3>Priority bucketing &amp; ordering <span class="tag">— heuristics</span></h3>
+        <h3>Priority bucketing &amp; ordering <span class="tag">heuristics</span></h3>
         <p>Survivors are bucketed by business priority (referrals first, then priority backgrounds) and ordered by the best available baseline score. Higher-value candidates are scored first, so a capped run still spends budget on the right people.</p>
       </div></div>
       <div class="stage"><div class="num">5</div><div class="body">
-        <h3>LLM scoring <span class="tag">— concurrency-limited · retried</span></h3>
-        <p>Each candidate gets a 0–100 score <b>and a written rationale</b> from the LLM, under a global concurrency cap. Transport errors, empty completions, and invalid JSON are retried; a single candidate's failure is isolated and skipped rather than killing the run.</p>
+        <h3>LLM scoring <span class="tag">concurrency-limited · retried</span></h3>
+        <p>Each candidate gets a 0-100 score <b>and a written rationale</b> from the LLM, under a global concurrency cap. Transport errors, empty completions, and invalid JSON are retried; a single candidate's failure is isolated and skipped rather than killing the run.</p>
       </div></div>
       <div class="stage"><div class="num">6</div><div class="body">
-        <h3>Qualification &amp; backfill <span class="tag">— targeting</span></h3>
-        <p>Candidates above threshold are linked first. If the qualified pool is short of the run's target, the engine backfills with the highest-scoring below-threshold candidates — so the team always gets a usable shortlist, and the fallback is logged transparently.</p>
+        <h3>Qualification &amp; backfill <span class="tag">targeting</span></h3>
+        <p>Candidates above threshold are linked first. If the qualified pool is short of the run's target, the engine backfills with the highest-scoring below-threshold candidates, so the team always gets a usable shortlist, and the fallback is logged transparently.</p>
       </div></div>
     </div>
 
@@ -298,7 +328,7 @@
                 <span class="c-str">domain and the preferred certification. Gap: no</span>
                 <span class="c-str">direct team-lead experience (preferred, not gating)."</span>
 }</code></pre>
-    <p class="muted" style="font-size:.9rem;margin-top:8px">A recruiter can read <i>why</i> a candidate ranked where they did — the difference between an automation people trust and a black box they override.</p>
+    <p class="muted" style="font-size:.9rem;margin-top:8px">A recruiter can read <i>why</i> a candidate ranked where they did, the difference between an automation people trust and a black box they override.</p>
   </div>
 </section>
 
@@ -311,20 +341,20 @@
 
     <div class="grid g2" style="margin-top:24px">
       <div class="card"><h3><span class="ico">↻</span> Idempotent re-runs</h3>
-        <p>Already-scored records are excluded from future runs. The same job can fire twice — from a retry, a duplicate webhook, or a manual re-trigger — without double-contacting candidates or duplicating matches.</p></div>
+        <p>Already-scored records are excluded from future runs. The same job can fire twice, from a retry, a duplicate webhook, or a manual re-trigger, without double-contacting candidates or duplicating matches.</p></div>
       <div class="card"><h3><span class="ico">⏱</span> Rate limiting &amp; queueing</h3>
         <p>Jobs run through a sequential queue with a concurrency cap and inter-write delays, deliberately staying under Notion and LLM quotas instead of hammering them and getting throttled.</p></div>
       <div class="card"><h3><span class="ico">⤾</span> Retry &amp; graceful degradation</h3>
-        <p>Exponential backoff on transient failures; empty-response and invalid-JSON hardening on LLM calls. Individual failures are skipped — the job only fails if <i>zero</i> usable results were produced.</p></div>
+        <p>Exponential backoff on transient failures; empty-response and invalid-JSON hardening on LLM calls. Individual failures are skipped, the job only fails if <i>zero</i> usable results were produced.</p></div>
       <div class="card"><h3><span class="ico">⛨</span> Schema-drift defense</h3>
-        <p>Third-party schemas change without warning. Missing properties are ignored, unexpected types are logged and skipped, and eligibility is re-checked after caching — so a workspace edit can't silently corrupt a run.</p></div>
+        <p>Third-party schemas change without warning. Missing properties are ignored, unexpected types are logged and skipped, and eligibility is re-checked after caching, so a workspace edit can't silently corrupt a run.</p></div>
       <div class="card"><h3><span class="ico">$</span> Cost control by design</h3>
         <p>Cheap filters run before expensive ones, candidate caps bound spend, and a TTL cache reuses candidate pools across runs. The LLM only ever sees the candidates worth paying to score.</p></div>
       <div class="card"><h3><span class="ico">⌗</span> Observability</h3>
-        <p>Structured logs trace every record by page id, email, stage, and skip reason — so "why wasn't this candidate matched?" is answerable from logs alone, without a debugger.</p></div>
+        <p>Structured logs trace every record by page id, email, stage, and skip reason, so "why wasn't this candidate matched?" is answerable from logs alone, without a debugger.</p></div>
     </div>
 
-    <div class="callout" style="margin-top:22px">⚙︎ <b>Multi-tenant by deployment.</b> Each workflow is its own Git branch deployed as its own service — so a client with a different data schema or matching rule gets a tailored deployment without forking the codebase or risking the others. Configuration lives entirely in environment variables; no code change ships a new tenant.</div>
+    <div class="callout" style="margin-top:22px">⚙︎ <b>Multi-tenant by deployment.</b> Each workflow is its own Git branch deployed as its own service, so a client with a different data schema or matching rule gets a tailored deployment without forking the codebase or risking the others. Configuration lives entirely in environment variables; no code change ships a new tenant.</div>
   </div>
 </section>
 
@@ -333,7 +363,7 @@
   <div class="wrap">
     <p class="eyebrow">Technical Writing</p>
     <h2>The documentation is part of the deliverable</h2>
-    <p class="lede">Every service ships with an operational handbook: what each branch does, every environment variable, the exact eligibility rules, the log lines to grep, and a troubleshooting guide written for whoever is on call at 2am — including future me. For an automation system that runs unattended, the docs <i>are</i> the reliability layer.</p>
+    <p class="lede">Every service ships with an operational handbook: what each branch does, every environment variable, the exact eligibility rules, the log lines to grep, and a troubleshooting guide written for whoever is on call at 2am, including future me. For an automation system that runs unattended, the docs <i>are</i> the reliability layer.</p>
 
     <div class="grid g3" style="margin-top:22px">
       <div class="card"><h3>Audience-layered</h3><p>Each handbook opens with a one-table overview a manager can read, then drills into branch-level specifics an engineer needs. Same document, two reading depths.</p></div>
@@ -341,10 +371,10 @@
       <div class="card"><h3>Failure-first</h3><p>A troubleshooting section maps real symptoms ("candidate wasn't matched") to the precise gate that excluded them.</p></div>
     </div>
 
-    <h3 style="margin-top:30px">Excerpt — a troubleshooting entry (sanitized)</h3>
+    <h3 style="margin-top:30px">Excerpt, a troubleshooting entry (sanitized)</h3>
     <pre><code><span class="c-com">## Troubleshooting</span>
 
-<span class="c-fn">- Candidate not considered for a role:</span> check, in order —
+<span class="c-fn">- Candidate not considered for a role:</span> check, in order , 
   1. Stage-2 keyword overlap (did any role keyword match the profile?)
   2. Stage-3 hard filters (language, location, minimum score)
   3. existing scored row (already processed in a prior run)
@@ -377,7 +407,7 @@
     <ul class="clean" style="margin-top:24px">
       <li><b>Automation Specialist signal:</b> 14 integrated services, event-driven, idempotent, rate-limited, running unattended in production.</li>
       <li><b>Senior Technical Writer signal:</b> audience-layered operational handbooks, failure-first troubleshooting, and this case study itself.</li>
-      <li><b>AI/LLM signal:</b> a cost-aware, explainable, retried scoring pipeline — not a single API call.</li>
+      <li><b>AI/LLM signal:</b> a cost-aware, explainable, retried scoring pipeline, not a single API call.</li>
     </ul>
   </div>
 </section>
@@ -386,7 +416,7 @@
 <footer id="contact">
   <div class="wrap">
     <p class="eyebrow">Contact</p>
-    <p style="font-size:1.05rem;color:var(--ink);margin:0 0 6px"><b>Wessam Mandour</b> — AI Automation Engineer &amp; Technical Writer</p>
+    <p style="font-size:1.05rem;color:var(--ink);margin:0 0 6px"><b>Wessam Mandour</b>, AI Automation Engineer &amp; Technical Writer</p>
     <p class="muted" style="margin:0 0 16px">
       <a href="mailto:wessam.mandour94@gmail.com">wessam.mandour94@gmail.com</a> &nbsp;·&nbsp;
       <a href="https://www.linkedin.com/in/wessam-mandour/">LinkedIn</a> &nbsp;·&nbsp;

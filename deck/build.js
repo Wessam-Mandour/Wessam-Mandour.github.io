@@ -34,7 +34,7 @@ s.addText("CASE STUDY · AUTOMATION ENGINEERING & TECHNICAL WRITING",
   { x:M, y:1.5, w:11, h:0.3, fontFace:MONO, fontSize:12, color:TEAL, charSpacing:2 });
 s.addText("AI Recruiting\nAutomation Platform",
   { x:M, y:2.0, w:11.5, h:2.2, fontFace:H, fontSize:54, bold:true, color:INK, lineSpacingMultiple:0.98 });
-s.addText("An end-to-end LLM matching engine and a 14-service communications pipeline — designed, built, and documented from scratch, running in production.",
+s.addText("An end-to-end LLM matching engine and a 14-service communications pipeline, designed, built, and documented from scratch, running in production.",
   { x:M, y:4.25, w:10.2, h:0.8, fontFace:BODY, fontSize:18, color:MUTED });
 pill(s, "AI Automation Engineer", M, 5.45, 2.85);
 pill(s, "Senior Technical Writer", M+3.05, 5.45, 2.85);
@@ -47,10 +47,10 @@ eyebrow(s, "The Problem"); title(s, "Recruiting top-of-funnel doesn't scale by h
 s.addText("Hundreds of candidates per role. Multi-channel outreach under provider rate caps. Interview transcripts to score. And a final match a recruiter must actually trust.",
   { x:M, y:1.85, w:11.6, h:0.8, fontFace:BODY, fontSize:17, color:MUTED });
 const probs = [
-  ["Volume", "Hundreds of applicants per role, most not a fit — manual screening is hours of work."],
+  ["Volume", "Hundreds of applicants per role, most not a fit, manual screening is hours of work."],
   ["Rate limits", "Email + WhatsApp outreach must respect provider caps and never double-send."],
   ["Transcripts", "Screening interviews arrive as raw transcripts that need consistent scoring."],
-  ["Trust", "A bare match score is useless — a recruiter needs to know WHY a candidate ranked."],
+  ["Trust", "A bare match score is useless, a recruiter needs to know WHY a candidate ranked."],
 ];
 probs.forEach((p,i)=>{
   const x = M + (i%2)*5.95, y = 2.95 + Math.floor(i/2)*1.85;
@@ -64,7 +64,7 @@ s = pptx.addSlide(); bg(s);
 eyebrow(s, "The System"); title(s, "Two systems, one automated funnel");
 const sys = [
   ["◆  Matching Engine", "Python · FastAPI · ~3,900 LoC", "Turns a free-text job description into a ranked shortlist with a written rationale per candidate, through a six-stage funnel."],
-  ["◆  Candidate Flow", "Node · Express · 14 services", "The comms & data pipeline: batched email and WhatsApp outreach, transcript ingestion and scoring, and CV parsing — each isolated."],
+  ["◆  Candidate Flow", "Node · Express · 14 services", "The comms & data pipeline: batched email and WhatsApp outreach, transcript ingestion and scoring, and CV parsing, each isolated."],
 ];
 sys.forEach((c,i)=>{
   const x = M + i*5.95; card(s, x, 1.9, 5.6, 2.3);
@@ -72,14 +72,14 @@ sys.forEach((c,i)=>{
   s.addText(c[1], { x:x+0.35, y:2.68, w:5, h:0.35, fontFace:MONO, fontSize:12.5, color:TEAL });
   s.addText(c[2], { x:x+0.35, y:3.12, w:5.0, h:1.0, fontFace:BODY, fontSize:14, color:MUTED });
 });
-const stats = [["14","deployed services"],["6","stage funnel"],["100s","scored / run"],["hrs→min","manual work cut"]];
+const stats = [["40,000","rows scanned / run"],["~2 hrs","full run on Railway"],["14","services on Railway"],["weeks→hrs","screening per role"]];
 stats.forEach((st,i)=>{
   const x = M + i*2.98; card(s, x, 4.5, 2.75, 1.6, PANEL2);
-  s.addText(st[0], { x:x, y:4.72, w:2.75, h:0.7, fontFace:H, fontSize:32, bold:true, color:TEAL, align:"center" });
+  s.addText(st[0], { x:x, y:4.72, w:2.75, h:0.7, fontFace:H, fontSize:30, bold:true, color:TEAL, align:"center" });
   s.addText(st[1], { x:x, y:5.5, w:2.75, h:0.4, fontFace:BODY, fontSize:12.5, color:MUTED, align:"center" });
 });
-s.addText("⚑  Placeholder figures — swap for your real, defensible numbers before presenting.",
-  { x:M, y:6.45, w:11.9, h:0.4, fontFace:BODY, fontSize:12.5, italic:true, color:WARN });
+s.addText("Deployed on Railway, triggered by webhooks, runs unattended.",
+  { x:M, y:6.45, w:11.9, h:0.4, fontFace:BODY, fontSize:13, italic:true, color:SOFT, align:"center" });
 
 /* ---------- 4 · ARCHITECTURE ---------- */
 s = pptx.addSlide(); bg(s);
@@ -118,11 +118,11 @@ s.addText("Each stage narrows the pool before the next, more expensive stage run
   { x:M, y:1.8, w:11.7, h:0.5, fontFace:BODY, fontSize:15, italic:true, color:MUTED });
 const stages = [
   ["1","Rubric extraction","LLM turns free-text job spec into a structured rubric: gates, requirements, keywords."],
-  ["2","Keyword reduction","Cheap local filter drops no-signal candidates BEFORE any paid LLM call — top cost lever."],
+  ["2","Keyword reduction","Cheap local filter drops no-signal candidates BEFORE any paid LLM call, top cost lever."],
   ["3","Hard filters","Non-negotiable gates: language, location, minimum screening score."],
   ["4","Priority ordering","Bucket by business priority; score the highest-value candidates first."],
-  ["5","LLM scoring","0–100 + written rationale each, concurrency-capped, retried, failure-isolated."],
-  ["6","Qualify & backfill","Link qualified first; backfill best below-threshold to hit target — logged."],
+  ["5","LLM scoring","0-100 + written rationale each, concurrency-capped, retried, failure-isolated."],
+  ["6","Qualify & backfill","Link qualified first; backfill best below-threshold to hit target, logged."],
 ];
 stages.forEach((st,i)=>{
   const x = M + (i%2)*5.95, y = 2.5 + Math.floor(i/2)*1.45;
@@ -137,12 +137,12 @@ stages.forEach((st,i)=>{
 s = pptx.addSlide(); bg(s);
 eyebrow(s, "Engineering"); title(s, "The parts that make it production, not a script");
 const eng = [
-  ["↻","Idempotent re-runs","Scored records skipped on re-run — no double-contact, no duplicate matches."],
-  ["⏱","Rate limiting","Sequential queue, concurrency cap, write delays — under quota by design."],
+  ["↻","Idempotent re-runs","Scored records skipped on re-run, no double-contact, no duplicate matches."],
+  ["⏱","Rate limiting","Sequential queue, concurrency cap, write delays, under quota by design."],
   ["⤾","Graceful degradation","Backoff + JSON hardening; one bad candidate can't sink a 200-candidate run."],
   ["⛨","Schema-drift defense","Missing props ignored, odd types logged & skipped, eligibility re-checked."],
-  ["$","Cost control","Cheap filters first, candidate caps, TTL cache — minimal LLM spend."],
-  ["⌗","Observability","Logs keyed by id, email, stage, skip reason — debuggable from logs alone."],
+  ["$","Cost control","Cheap filters first, candidate caps, TTL cache, minimal LLM spend."],
+  ["⌗","Observability","Logs keyed by id, email, stage, skip reason, debuggable from logs alone."],
 ];
 eng.forEach((e,i)=>{
   const x = M + (i%3)*3.98, y = 2.0 + Math.floor(i/3)*2.1;
@@ -159,7 +159,7 @@ eyebrow(s, "Technical Writing"); title(s, "The documentation is part of the deli
 s.addText("Every service ships an operational handbook. For a system that runs unattended, the docs are the reliability layer.",
   { x:M, y:1.85, w:5.4, h:1.0, fontFace:BODY, fontSize:16, color:MUTED });
 const docpts = [
-  ["Audience-layered","One-table overview for managers, branch-level depth for engineers — same doc."],
+  ["Audience-layered","One-table overview for managers, branch-level depth for engineers, same doc."],
   ["Operational","Documents which log line proves which behavior: debug by grep, not by reading source."],
   ["Failure-first","Maps real symptoms to the exact gate that caused them."],
 ];
@@ -175,9 +175,9 @@ card(s, tx, 1.85, tw, 4.9, "0A0E14");
 s.addText("troubleshooting.md", {x:tx+1.4,y:2.05,w:4,h:0.3,fontFace:MONO,fontSize:11,color:SOFT});
 const term = [
   { text:"## Troubleshooting\n\n", options:{color:SOFT} },
-  { text:"Candidate not considered for a role — check, in order:\n", options:{color:TEAL,bold:true} },
+  { text:"Candidate not considered for a role, check, in order:\n", options:{color:TEAL,bold:true} },
   { text:"  1. Stage-2 keyword overlap\n  2. Stage-3 hard filters (language, location, score)\n  3. existing scored row (already processed)\n  4. duplicate-email de-duplication\n\n", options:{color:INK} },
-  { text:"Fewer qualified matches than target — expected:\n", options:{color:TEAL,bold:true} },
+  { text:"Fewer qualified matches than target, expected:\n", options:{color:TEAL,bold:true} },
   { text:"  Stage 6 backfills below-threshold by descending\n  score and logs ", options:{color:INK} },
   { text:"fallback_selected=true", options:{color:WARN} },
   { text:" per row.", options:{color:INK} },
@@ -187,15 +187,15 @@ s.addText(term, {x:tx+0.35, y:2.55, w:tw-0.7, h:4.0, fontFace:MONO, fontSize:12,
 /* ---------- 8 · IMPACT ---------- */
 s = pptx.addSlide(); bg(s);
 eyebrow(s, "Impact"); title(s, "What the automation delivers");
-const imp = [["100s","candidates scored per run, unattended"],["hrs → min","manual shortlisting per role, eliminated"],["14","integrations live with zero rate-limit incidents"],["1","explainable rationale on every single match"]];
+const imp = [["40,000","candidate rows scanned per run, unattended"],["~2 hrs","full run on Railway, webhook to shortlist"],["weeks→hrs","recruiter screening per role, collapsed"],["1","written rationale on every single match"]];
 imp.forEach((m,i)=>{
   const x = M + (i%2)*5.95, y = 2.1 + Math.floor(i/2)*2.15;
   card(s, x, y, 5.6, 1.9, PANEL2);
-  s.addText(m[0],{x:x+0.4,y:y+0.3,w:5,h:0.95,fontFace:H,fontSize:44,bold:true,color:TEAL});
-  s.addText(m[1],{x:x+0.42,y:y+1.25,w:4.9,h:0.5,fontFace:BODY,fontSize:14.5,color:MUTED});
+  s.addText(m[0],{x:x+0.4,y:y+0.32,w:5,h:0.9,fontFace:H,fontSize:38,bold:true,color:TEAL});
+  s.addText(m[1],{x:x+0.42,y:y+1.25,w:4.95,h:0.5,fontFace:BODY,fontSize:14,color:MUTED});
 });
-s.addText("⚑  Replace these with your real figures — one concrete, honest number is what a hiring manager remembers.",
-  { x:M, y:6.5, w:11.9, h:0.4, fontFace:BODY, fontSize:13, italic:true, color:WARN });
+s.addText("Business outcome above. The six-stage workflow that produces it is on the previous slides.",
+  { x:M, y:6.5, w:11.9, h:0.4, fontFace:BODY, fontSize:13, italic:true, color:SOFT, align:"center" });
 
 /* ---------- 9 · CLOSING ---------- */
 s = pptx.addSlide(); bg(s);
@@ -203,7 +203,7 @@ s.addText("WHAT THIS DEMONSTRATES", {x:M,y:1.2,w:11,h:0.3,fontFace:MONO,fontSize
 const sig = [
   ["Automation","14 event-driven services, idempotent, rate-limited, running unattended in production."],
   ["Technical writing","Audience-layered operational handbooks, failure-first troubleshooting, this case study."],
-  ["Applied AI","A cost-aware, explainable, retried LLM scoring pipeline — not a single API call."],
+  ["Applied AI","A cost-aware, explainable, retried LLM scoring pipeline, not a single API call."],
 ];
 sig.forEach((g,i)=>{
   const y = 1.85 + i*1.25;
