@@ -4,7 +4,19 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Case Study | Wessam Mandour</title>
-<meta name="description" content="Long-form case study: an end-to-end AI recruiting automation platform, designed and built from scratch." />
+<meta name="description" content="Long-form case study: an end-to-end AI recruiting automation platform, two independent projects, designed and built from scratch." />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="alternate icon" href="favicon.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wessam-mandour.github.io/case-study.html" />
+<meta property="og:title" content="Case Study, AI Recruiting Automation Platform | Wessam Mandour" />
+<meta property="og:description" content="A role-matching engine that scores 20,000+ candidates per run and a 14-service comms pipeline, two independent projects built and run solo." />
+<meta property="og:image" content="https://wessam-mandour.github.io/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://wessam-mandour.github.io/og-image.png" />
 <style>
   :root{
     --bg:#0d1117; --panel:#161b22; --panel-2:#1c2330; --line:#2a3240;
@@ -51,7 +63,6 @@
   th{background:var(--panel);color:var(--ink);font-weight:600}
   td{color:#c5d0db}
   tr:nth-child(even) td{background:rgba(255,255,255,.015)}
-  /* Q&A: markdown renders these as bold paragraphs; style the bold question lead */
   .home{display:inline-block;margin-top:40px;font-family:var(--mono);font-size:.9rem;
     color:var(--accent);border:1px solid var(--line);background:var(--panel);
     padding:10px 18px;border-radius:8px}
@@ -82,22 +93,26 @@ automatically: candidate outreach, screening-interview ingestion and
 scoring, CV parsing, and DeepSeek-based role matching, writing a ranked,
 <em>explained</em> shortlist back to the recruiting team's
 workspace.</p>
-<p>It is two systems:</p>
+<p>It is <strong>two completely independent projects</strong>, each its
+own codebase, repository, and deployment, talking only through the
+shared Notion workspace:</p>
 <ul>
-<li><strong>Matching Engine</strong>, Python / FastAPI, DeepSeek. A
+<li><strong>Project 01, Role Matching</strong>, Python / FastAPI. A
 six-stage funnel that turns a free-text job description into a ranked
 shortlist with a written rationale per candidate. A single run scans up
 to ~40,000 candidate rows and, depending on the role, scores
-<strong>upward of 20,000 of them, that is 20,000+ DeepSeek API calls in
-one run</strong>. A full run takes 90 to 120 minutes on Railway and
-posts Slack status updates to the whole team.</li>
-<li><strong>Candidate Flow</strong>, Node / Express, 14 independently
-deployed services. A mix of <strong>webhook-triggered</strong>
-automations (parse a CV on submit, fetch and score an interview
-transcript when it lands) and <strong>cron-scheduled</strong> reminder
-sweeps. Handles 2,000+ WhatsApp messages and emails a day (Twilio +
-Postmark), parses a CV in under a minute, and updates Notion with a
-completed interview's details and status within about 60 seconds.</li>
+<strong>upward of 20,000 of them, that is 20,000+ LLM API calls in one
+run</strong> (the model in production is DeepSeek). A full run takes 90
+to 120 minutes on Railway and posts Slack status updates to the whole
+team.</li>
+<li><strong>Project 02, Candidate Flow</strong>, Node / Express, 14
+independently deployed services. A mix of
+<strong>webhook-triggered</strong> automations (parse a CV on submit,
+fetch and score an interview transcript when it lands) and
+<strong>cron-scheduled</strong> reminder sweeps. Handles 2,000+ WhatsApp
+messages and emails a day (Twilio + Postmark), parses a CV in under a
+minute, and updates Notion with a completed interview's details and
+status within about 60 seconds.</li>
 </ul>
 <p>The interesting part is not "it uses an LLM." It's the judgment about
 <strong>when not to</strong>: roughly 90% of the work runs on DeepSeek

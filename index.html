@@ -5,6 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Wessam Mandour | AI Automations Expert & Technical Writer</title>
 <meta name="description" content="Case study: an end-to-end AI recruiting automation platform. Multi-stage LLM matching pipeline, comms automation across 14 services, and the documentation that ships with it." />
+
+<!-- favicon -->
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="alternate icon" href="favicon.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+<!-- social link preview (Open Graph + Twitter) -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://wessam-mandour.github.io/" />
+<meta property="og:title" content="Wessam Mandour, AI Automations Expert & Technical Writer" />
+<meta property="og:description" content="An AI recruiting automation platform: a role-matching engine that scores 20,000+ candidates per run and a 14-service comms pipeline, designed, built, and run solo." />
+<meta property="og:image" content="https://wessam-mandour.github.io/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Wessam Mandour, AI Automations Expert & Technical Writer" />
+<meta name="twitter:description" content="An AI recruiting automation platform: a role-matching engine that scores 20,000+ candidates per run and a 14-service comms pipeline, built solo." />
+<meta name="twitter:image" content="https://wessam-mandour.github.io/og-image.png" />
 <style>
   :root{
     --bg:#0d1117; --panel:#161b22; --panel-2:#1c2330; --line:#2a3240;
@@ -35,10 +53,21 @@
     backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   nav .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
   nav .brand{font-family:var(--mono);font-weight:600;color:var(--ink);font-size:.92rem}
-  nav .links{display:flex;gap:22px;font-size:.9rem}
+  nav .links{display:flex;gap:22px;font-size:.9rem;align-items:center}
   nav .links a{color:var(--muted)}
   nav .links a:hover{color:var(--ink);text-decoration:none}
-  @media(max-width:680px){nav .links{display:none}}
+  .navtoggle{display:none;background:var(--panel);border:1px solid var(--line);color:var(--ink);
+    font-size:1.2rem;line-height:1;border-radius:8px;padding:5px 12px;cursor:pointer}
+  @media(max-width:900px){
+    .navtoggle{display:inline-block}
+    nav .links{position:absolute;top:58px;left:0;right:0;display:none;flex-direction:column;
+      gap:0;background:rgba(13,17,23,.98);border-bottom:1px solid var(--line);
+      padding:6px 22px 14px;align-items:stretch}
+    nav.open .links{display:flex}
+    nav .links a{padding:13px 2px;border-top:1px solid var(--line);color:var(--ink);font-size:1rem}
+    nav .links a:first-child{border-top:none}
+    nav .links a.nav-cv{border:1px solid var(--line);margin-top:10px;text-align:center;color:var(--accent)}
+  }
 
   /* ---------- hero ---------- */
   .hero{padding:74px 0 60px}
@@ -142,6 +171,16 @@
   .qa .ans p{margin:0;color:var(--muted);font-size:.97rem}
   .qa .ans p+p{margin-top:10px}
   .qa .ans b{color:var(--ink);font-weight:600}
+
+  /* ---------- two independent projects ---------- */
+  .proj{border-top:3px solid var(--accent)}
+  .proj2{border-top:3px solid var(--accent-2)}
+  .projtag{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--accent);display:block;margin-bottom:8px}
+  .proj2 .projtag{color:var(--accent-2)}
+  .proj h3 .ico{color:var(--accent)}
+  .proj2 h3 .ico{color:var(--accent-2)}
+  .projstack{font-family:var(--mono);font-size:.82rem;color:var(--soft);margin:3px 0 10px}
 </style>
 </head>
 <body>
@@ -149,11 +188,12 @@
 <nav>
   <div class="wrap">
     <a class="brand" href="#top">WM</a>
+    <button class="navtoggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
     <div class="links">
       <a href="#system">System</a>
       <a href="#impact">Impact</a>
       <a href="#architecture">Architecture</a>
-      <a href="#pipeline">Matching Engine</a>
+      <a href="#pipeline">Role Matching</a>
       <a href="#engineering">Under the Hood</a>
       <a href="#config">Config</a>
       <a href="#detail">In Detail</a>
@@ -173,7 +213,7 @@
     <div class="roles">
       <span class="pill">AI Automations Expert</span>
       <span class="pill">Senior Technical Writer</span>
-      <span class="pill">DeepSeek · LLM Workflows</span>
+      <span class="pill">LLM Workflows &amp; API Integration</span>
     </div>
     <div class="cta">
       <a class="btn primary" href="#system">Read the case study ↓</a>
@@ -188,24 +228,28 @@
 <!-- ============ SYSTEM OVERVIEW ============ -->
 <section id="system">
   <div class="wrap">
-    <p class="eyebrow">The System</p>
-    <h2>An AI recruiting automation platform</h2>
-    <p class="lede">A job opening enters as a form submission. From there, the platform runs the entire top-of-funnel with no manual steps: it sources and contacts candidates, ingests and scores their screening interviews, parses their CVs, and matches them to the role with an LLM, writing back a ranked, <i>explained</i> shortlist for the recruiting team. Two systems do the work.</p>
+    <p class="eyebrow">The System · Two Independent Projects</p>
+    <h2>Two separate projects, one recruiting funnel</h2>
+    <p class="lede">This platform is <b>two completely independent projects</b>, each its own codebase, repository, and deployment. They talk only through the shared Notion workspace, so either can be changed or redeployed without touching the other.</p>
 
     <div class="grid g2" style="margin-top:26px">
-      <div class="card">
-        <h3><span class="ico">◆</span> Matching Engine</h3>
-        <p><b style="color:var(--ink)">Python · FastAPI · DeepSeek.</b> A webhook-driven service that turns a free-text job description into a structured rubric, then scores and ranks the candidate pool through a six-stage funnel, making <b>upward of 20,000 DeepSeek API calls per run</b> depending on the role. A full run takes <b>90 to 120 minutes</b> on Railway and posts <b>Slack status updates</b> so the whole team sees it start, progress, and finish.</p>
+      <div class="card proj">
+        <span class="projtag">Project 01 · independent codebase</span>
+        <h3><span class="ico">◆</span> Role Matching</h3>
+        <p class="projstack">Python · FastAPI · LLM scoring</p>
+        <p>A webhook-driven matching engine that turns a free-text job description into a structured rubric, then scores and ranks the candidate pool through a six-stage funnel, <b>upward of 20,000 LLM API calls per run</b> depending on the role. A full run takes <b>90 to 120 minutes</b> on Railway and posts <b>Slack status updates</b> so the whole team sees it start, progress, and finish.</p>
       </div>
-      <div class="card">
+      <div class="card proj proj2">
+        <span class="projtag">Project 02 · independent codebase</span>
         <h3><span class="ico">◆</span> Candidate Flow</h3>
-        <p><b style="color:var(--ink)">Node · Express · 14 services.</b> A mix of <b>webhook-triggered</b> automations (parse a CV the moment it is submitted, score an interview transcript when it lands) and <b>cron-scheduled</b> reminder sweeps that run on a timer. Sends <b>2,000+ WhatsApp messages and emails a day</b> (Twilio + Postmark); the CV parser finishes in <b>under a minute</b>.</p>
+        <p class="projstack">Node · Express · 14 services</p>
+        <p>The communications and data pipeline: a mix of <b>webhook-triggered</b> automations (parse a CV the moment it is submitted, fetch and score an interview transcript when it lands) and <b>cron-scheduled</b> reminder sweeps that run on a timer. Sends <b>2,000+ WhatsApp messages and emails a day</b> (Twilio + Postmark); the CV parser finishes in <b>under a minute</b>.</p>
       </div>
     </div>
 
     <div class="metrics" style="margin-top:22px">
       <div class="metric"><div class="n">40,000</div><div class="l">rows scanned per matching run</div></div>
-      <div class="metric"><div class="n">20,000+</div><div class="l">scored per run via DeepSeek</div></div>
+      <div class="metric"><div class="n">20,000+</div><div class="l">scored per run (LLM API)</div></div>
       <div class="metric"><div class="n">90-120 min</div><div class="l">full matching run on Railway</div></div>
       <div class="metric"><div class="n">2,000+/day</div><div class="l">WhatsApp + emails sent</div></div>
     </div>
@@ -535,10 +579,22 @@
 <a href="#top" id="toTop" aria-label="Back to top" title="Back to top">↑</a>
 <script>
   (function(){
+    // floating back-to-top
     var t=document.getElementById('toTop');
     window.addEventListener('scroll',function(){
-      t.classList.toggle('show', window.scrollY > 500);
+      t.classList.toggle('show', window.scrollY > 320);
     });
+    // mobile nav toggle
+    var nav=document.querySelector('nav'), tog=document.querySelector('.navtoggle');
+    if(tog){
+      tog.addEventListener('click',function(){
+        var open=nav.classList.toggle('open');
+        tog.setAttribute('aria-expanded', open);
+      });
+      nav.querySelectorAll('.links a').forEach(function(a){
+        a.addEventListener('click',function(){ nav.classList.remove('open'); tog.setAttribute('aria-expanded','false'); });
+      });
+    }
   })();
 </script>
 

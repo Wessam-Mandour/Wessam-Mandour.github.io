@@ -10,10 +10,10 @@
 
 I built and operate an end-to-end AI recruiting platform that takes a job opening from an intake form and runs the entire top-of-funnel automatically: candidate outreach, screening-interview ingestion and scoring, CV parsing, and DeepSeek-based role matching, writing a ranked, *explained* shortlist back to the recruiting team's workspace.
 
-It is two systems:
+It is **two completely independent projects**, each its own codebase, repository, and deployment, talking only through the shared Notion workspace:
 
-- **Matching Engine**, Python / FastAPI, DeepSeek. A six-stage funnel that turns a free-text job description into a ranked shortlist with a written rationale per candidate. A single run scans up to ~40,000 candidate rows and, depending on the role, scores **upward of 20,000 of them, that is 20,000+ DeepSeek API calls in one run**. A full run takes 90 to 120 minutes on Railway and posts Slack status updates to the whole team.
-- **Candidate Flow**, Node / Express, 14 independently deployed services. A mix of **webhook-triggered** automations (parse a CV on submit, fetch and score an interview transcript when it lands) and **cron-scheduled** reminder sweeps. Handles 2,000+ WhatsApp messages and emails a day (Twilio + Postmark), parses a CV in under a minute, and updates Notion with a completed interview's details and status within about 60 seconds.
+- **Project 01, Role Matching**, Python / FastAPI. A six-stage funnel that turns a free-text job description into a ranked shortlist with a written rationale per candidate. A single run scans up to ~40,000 candidate rows and, depending on the role, scores **upward of 20,000 of them, that is 20,000+ LLM API calls in one run** (the model in production is DeepSeek). A full run takes 90 to 120 minutes on Railway and posts Slack status updates to the whole team.
+- **Project 02, Candidate Flow**, Node / Express, 14 independently deployed services. A mix of **webhook-triggered** automations (parse a CV on submit, fetch and score an interview transcript when it lands) and **cron-scheduled** reminder sweeps. Handles 2,000+ WhatsApp messages and emails a day (Twilio + Postmark), parses a CV in under a minute, and updates Notion with a completed interview's details and status within about 60 seconds.
 
 The interesting part is not "it uses an LLM." It's the judgment about **when not to**: roughly 90% of the work runs on DeepSeek where reasoning is needed, while parsing, filtering, and routing are handled by regex and deterministic logic so no tokens are wasted. And it all runs **unattended, in production, against rate-limited third-party APIs**, staying correct, affordable, and recoverable while doing so.
 
