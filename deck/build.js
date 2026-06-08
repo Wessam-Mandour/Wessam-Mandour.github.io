@@ -159,7 +159,7 @@ eyebrow(s, "Technical Writing"); title(s, "The documentation is part of the deli
 s.addText("Every service ships an operational handbook. For a system that runs unattended, the docs are the reliability layer.",
   { x:M, y:1.85, w:5.4, h:1.0, fontFace:BODY, fontSize:16, color:MUTED });
 const docpts = [
-  ["Audience-layered","One-table overview for managers, branch-level depth for engineers, same doc."],
+  ["Audience-layered","One-table overview for managers, branch-level depth for developers, same doc."],
   ["Operational","Documents which log line proves which behavior: debug by grep, not by reading source."],
   ["Failure-first","Maps real symptoms to the exact gate that caused them."],
 ];
