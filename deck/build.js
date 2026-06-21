@@ -153,7 +153,36 @@ eng.forEach((e,i)=>{
   s.addText(e[2],{x:x+0.3,y:y+1.32,w:3.2,h:0.5,fontFace:BODY,fontSize:12,color:MUTED});
 });
 
-/* ---------- 6b · CONFIGURABILITY ---------- */
+/* ---------- 6b · RELIABILITY ---------- */
+s = pptx.addSlide(); bg(s);
+eyebrow(s, "Reliability & Error Handling"); title(s, "What survives when a third party misbehaves");
+const relCols = [
+  { name:"Project 01 · Role Matching", acc:TEAL, items:[
+    "DeepSeek over HTTPX: 7 retries, Retry-After aware, 5xx retried, other 4xx fail-fast, 90s timeout",
+    "Notion: 10 attempts in a 180s window, longer backoff on 503, invalid cursor = 5-min cooldown + restart",
+    "Global async semaphore (100) + prefetch window; sequential job queue with a 5-min cooldown between jobs",
+    "Per-candidate isolation; the run fails only if zero usable scores come back; idempotent re-runs",
+  ]},
+  { name:"Project 02 · Candidate Flow", acc:BLUE, items:[
+    "Postmark: hourly + daily send caps (sliding window), 408/429/5xx backoff, 5-min queue cooldown",
+    "Hireflix transcript: polls up to 10 min at 60s, writes only when every answer is transcribed",
+    "Twilio: cron-driven, five templates, a configurable hours-since threshold, never double-nudges",
+    "CV: pdf-parse + regex extraction, DeepSeek only to structure & score; SIGTERM + crash handlers",
+  ]},
+];
+relCols.forEach((col,i)=>{
+  const x = M + i*6.0;
+  card(s, x, 1.85, 5.75, 4.95, PANEL);
+  s.addShape(pptx.ShapeType.rect,{ x:x, y:1.85, w:5.75, h:0.07, fill:{color:col.acc}, line:{type:"none"} });
+  s.addText(col.name, { x:x+0.35, y:2.12, w:5.05, h:0.4, fontFace:MONO, fontSize:13, bold:true, color:col.acc });
+  const bullets = col.items.map(t=>({ text:t, options:{ bullet:{indent:16}, breakLine:true } }));
+  s.addText(bullets, { x:x+0.35, y:2.66, w:5.05, h:3.95, fontFace:BODY, fontSize:13.5, color:MUTED,
+    lineSpacingMultiple:1.04, paraSpaceAfter:11, valign:"top" });
+});
+s.addText("Drawn from the actual codebases, not aspirational.",
+  { x:M, y:6.92, w:11.9, h:0.3, fontFace:BODY, fontSize:12, italic:true, color:SOFT, align:"center" });
+
+/* ---------- 6c · CONFIGURABILITY ---------- */
 s = pptx.addSlide(); bg(s);
 eyebrow(s, "Configurable by Design"); title(s, "One codebase, many deployments, zero forks");
 s.addText("Nothing is hard-coded per client. Behavior is driven entirely by environment variables, so the same service is deployed many times, each tuned to a different goal, by changing config and redeploying.",

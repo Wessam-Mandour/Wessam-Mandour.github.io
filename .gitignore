@@ -1,5 +1,8 @@
 # dev artifacts — not part of the published site
 deck/node_modules/
 deck/slide-*.jpg
+video/node_modules/
+video/_profile/
+_frames/
 .DS_Store
 Thumbs.db
