@@ -57,6 +57,7 @@ const clamp01 = v => Math.max(0, Math.min(1, v));
     document.documentElement.style.scrollBehavior = 'auto';
     const vh = document.querySelector('.videohero'); if (vh) vh.style.display='none';
     const v = document.querySelector('video'); if (v){ v.pause(); v.removeAttribute('autoplay'); }
+    const tt = document.getElementById('toTop'); if (tt) tt.style.display='none';
     const navH = (document.querySelector('nav')||{}).offsetHeight || 58;
 
     const order = ['header.hero','#system','#impact','#architecture','#role-matching','#candidate-flow','#config','#writing','#stack'];
@@ -104,6 +105,14 @@ const clamp01 = v => Math.max(0, Math.min(1, v));
     document.body.appendChild(over);
     const flash=document.createElement('div'); flash.id='vidflash'; document.body.appendChild(flash);
     const prog=document.createElement('div'); prog.id='vidprog'; document.body.appendChild(prog);
+    // persistent URL watermark (always visible, survives download + re-upload)
+    const mark=document.createElement('div');
+    mark.innerHTML='<span class="wm">WM</span><span class="u">wessam-mandour.github.io</span>';
+    mark.style.cssText='position:fixed;right:26px;bottom:24px;z-index:10001;display:flex;align-items:center;gap:9px;'+
+      'background:rgba(10,14,20,.74);backdrop-filter:blur(4px);border:1px solid #2a3240;border-radius:999px;padding:8px 16px 8px 10px';
+    mark.querySelector('.wm').style.cssText='width:22px;height:22px;border:1.5px solid #5eead4;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:11px;color:#5eead4';
+    mark.querySelector('.u').style.cssText='font-family:ui-monospace,Consolas,monospace;font-size:15px;color:#e6edf3;letter-spacing:.02em';
+    document.body.appendChild(mark);
 
     let hlEls=[];
     window.__vid = (s) => {
