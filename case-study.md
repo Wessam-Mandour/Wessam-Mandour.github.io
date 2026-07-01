@@ -231,4 +231,4 @@ The difference between a script and a production system is everything that happe
 ---
 
 *Wessam Mandour · AI Automations Expert & Technical Writer*
-*[wessam.mandour94@gmail.com](mailto:wessam.mandour94@gmail.com) · [LinkedIn](https://www.linkedin.com/in/wessam-mandour/) · [GitHub](https://github.com/Wes-200)*
+*[wessam.mandour94@gmail.com](mailto:wessam.mandour94@gmail.com) · [LinkedIn](https://www.linkedin.com/in/wessam-mandour/) · [GitHub](https://github.com/Wes-200/Wes-200)*

@@ -197,7 +197,7 @@ const clamp01 = v => Math.max(0, Math.min(1, v));
         st.flash = 1;
         st.over = { op: easeInOut(clamp01(ls/0.5)), set:true, nm:'Let’s talk.',
           ti:'wessam.mandour94@gmail.com',
-          u:'linkedin.com/in/wessam-mandour · github.com/Wes-200' };
+          u:'linkedin.com/in/wessam-mandour · github.com/Wes-200/Wes-200' };
       }
 
       await page.evaluate(s => window.__vid(s), st);

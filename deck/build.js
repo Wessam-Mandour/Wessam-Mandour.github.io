@@ -259,7 +259,7 @@ sig.forEach((g,i)=>{
   s.addText(g[1],{x:M+0.4,y:y+0.5,w:10.5,h:0.6,fontFace:BODY,fontSize:15,color:MUTED});
 });
 s.addText("Wessam Mandour", {x:M,y:6.0,w:7,h:0.5,fontFace:H,fontSize:22,bold:true,color:INK});
-s.addText("wessam.mandour94@gmail.com   ·   linkedin.com/in/wessam-mandour   ·   github.com/Wes-200",
+s.addText("wessam.mandour94@gmail.com   ·   linkedin.com/in/wessam-mandour   ·   github.com/Wes-200/Wes-200",
   {x:M,y:6.55,w:12,h:0.4,fontFace:MONO,fontSize:13,color:MUTED});
 
 pptx.writeFile({ fileName: "AI-Recruiting-Automation-Portfolio.pptx" }).then(f=>console.log("Wrote",f));
